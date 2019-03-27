@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="net.rgsw.minesweeper.game.GameActivity">
+    <item
+            android:title="@string/new_game"
+            android:id="@+id/menu_new_game"/>
+    <item
+            android:title="@string/main_menu"
+            android:id="@+id/menu_main_menu"/>
+    <item
+            android:id="@+id/menu_face"
+            android:icon="@drawable/ic_face_alive"
+            android:title="@string/face_icon"
+            app:showAsAction="ifRoom"/>
+    <item
+            android:title="@string/pause_play"
+            app:showAsAction="ifRoom"
+            android:icon="@drawable/ic_game_pause"
+            android:id="@+id/menu_pause"/>
+    <item
+            android:title="@string/discard"
+            android:id="@+id/menu_discard"/>
+</menu>

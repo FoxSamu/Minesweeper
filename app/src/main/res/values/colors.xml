@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#29B6F6</color>
+    <color name="colorPrimaryDark">#0086c3</color>
+    <color name="colorAccent">#FF5252</color>
+
+    <color name="colorDarkPrimary">#f44336</color>
+    <color name="colorDarkPrimaryDark">#ba000d</color>
+    <color name="colorDarkAccent">#2979ff</color>
+
+    <color name="colorAccentAlpha">#55FF5252</color>
+    <color name="colorAccentAlt">#00E676</color>
+
+    <color name="black_overlay">#66000000</color>
+
+    <!--
+    private static final int COLOR_REVEALED = 0xffeeeeee;
+    private static final int COLOR_UNREVEALED = 0xff9e9e9e;
+    private static final int COLOR_GRID_OVERLAY = 0x15000000;
+    private static final int COLOR_REVEALED_DARK = 0xff424242;
+    private static final int COLOR_UNREVEALED_DARK = 0xff757575;
+    -->
+
+    <color name="unrevealed_color">#ff9e9e9e</color>
+    <color name="unrevealed_color_dark">#ff757575</color>
+    <color name="revealed_color">#ffeeeeee</color>
+    <color name="revealed_color_dark">#ff424242</color>
+    <color name="grid_overlay_color">#15000000</color>
+
+    <color name="red_tint">#ef5350</color>
+    <color name="green_tint">#66bb6a</color>
+    <color name="blue_tint">#42a5f5</color>
+    <color name="yellow_tint">#ffeb3b</color>
+    <color name="orange_tint">#ff9800</color>
+    <color name="purple_tint">#673ab7</color>
+    <color name="white_tint">#eeeeee</color>
+    <color name="black_tint">#212121</color>
+</resources>

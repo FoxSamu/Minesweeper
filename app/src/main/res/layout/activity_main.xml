@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context=".main.MainActivity">
+
+    <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_button"
+            android:layout_width="146dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            app:srcCompat="@drawable/ic_action_add"
+            android:contentDescription="@string/add_mode"/>
+
+    <include
+            layout="@layout/content_main"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior"/>
+
+    <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="?attr/popupTheme"
+                android:elevation="4dp"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#88000000"
+            android:orientation="vertical"
+            android:gravity="right"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            android:id="@+id/options_bg"
+            android:elevation="24dp"
+            tools:visibility="gone">
+
+        <include
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/options_menu"
+                android:layout_gravity="end"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"/>
+
+    </LinearLayout>
+
+    <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            layout="@layout/main_bottom_sheet"
+            app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+            tools:visibility="gone"/>
+
+</android.support.design.widget.CoordinatorLayout>

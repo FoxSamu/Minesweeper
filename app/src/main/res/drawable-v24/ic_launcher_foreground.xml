@@ -1,0 +1,40 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:aapt="http://schemas.android.com/aapt"
+        android:width="108dp"
+        android:height="108dp"
+        android:viewportWidth="20.869566"
+        android:viewportHeight="20.869566">
+    <group
+            android:translateX="-1.5652174"
+            android:translateY="-1.5652174">
+        <path
+                android:pathData="M15,9 L13.5634,9.478 11.3223,9.1116 9.478,10.4366v3.1295L9,15 17.9986,24H24v-6.0014z"
+                android:strokeAlpha="1"
+                android:strokeWidth="12.03547668"
+                android:strokeColor="#00000000"
+                android:fillAlpha="1">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                        android:startY="12"
+                        android:startX="12"
+                        android:endY="22.83193"
+                        android:endX="22.83193"
+                        android:type="linear">
+                    <item
+                            android:offset="0"
+                            android:color="#26000000"/>
+                    <item
+                            android:offset="1"
+                            android:color="#00000000"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+                android:pathData="m12,7.7562 l-0.6777,1.3554c-0.3141,0.0731 -0.6141,0.1969 -0.8884,0.3664L9,9 9.478,10.4366C9.3082,10.71 9.184,11.0091 9.1102,11.3223L7.7562,12l1.3554,0.6777c0.0731,0.3141 0.1969,0.6141 0.3664,0.8884L9,15 10.4366,14.522c0.2734,0.1697 0.5725,0.294 0.8857,0.3678L12,16.2438 12.6777,14.8884c0.3141,-0.0731 0.6141,-0.1969 0.8884,-0.3664L15,15 14.522,13.5634c0.1697,-0.2734 0.294,-0.5725 0.3678,-0.8857L16.2438,12 14.8884,11.3223c-0.0731,-0.3141 -0.1969,-0.6141 -0.3664,-0.8884L15,9 13.5634,9.478C13.29,9.3082 12.9909,9.184 12.6777,9.1102ZM12,9.8774C13.1724,9.8771 14.1229,10.8276 14.1226,12 14.1229,13.1724 13.1724,14.1229 12,14.1226 10.8276,14.1229 9.8771,13.1724 9.8774,12 9.8771,10.8276 10.8276,9.8771 12,9.8774Z"
+                android:strokeAlpha="1"
+                android:strokeWidth="12.03547668"
+                android:fillColor="#3f51b5"
+                android:strokeColor="#00000000"
+                android:fillAlpha="1"/>
+    </group>
+</vector>

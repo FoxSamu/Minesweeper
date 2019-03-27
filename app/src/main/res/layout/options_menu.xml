@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:contentPadding="0dp"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="15dp"
+                                    android:id="@+id/options_menu"
+                                    android:paddingLeft="24dp"
+                                    android:paddingRight="24dp">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_copy"
+                    android:id="@+id/options_copy"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:contentDescription="@string/options_copy"
+                    android:longClickable="true"
+                    android:tint="?attr/themableIcon"
+                    android:background="?attr/iconbutton"/>
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_edit_mode"
+                    android:id="@+id/options_edit"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:visibility="visible"
+                    android:contentDescription="@string/options_edit"
+                    android:longClickable="true"
+                    android:tint="#3f51b5"
+                    android:background="?attr/iconbutton"/>
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_play"
+                    android:id="@+id/options_play"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:visibility="visible"
+                    android:contentDescription="@string/options_play"
+                    android:longClickable="true"
+                    android:tint="#4caf50"
+                    android:background="?attr/iconbutton"/>
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_close_options"
+                    android:id="@+id/options_cancel"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:contentDescription="@string/options_close"
+                    android:longClickable="true"
+                    android:background="?attr/iconbutton"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_info"
+                    android:id="@+id/options_info"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:contentDescription="@string/options_info"
+                    android:longClickable="true"
+                    android:tint="#2196f3"
+                    android:background="?attr/iconbutton"/>
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_clear_history"
+                    android:id="@+id/options_clear_history"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:contentDescription="@string/options_reset_stats"
+                    android:longClickable="true"
+                    android:tint="#ffa000"
+                    android:background="?attr/iconbutton"/>
+
+            <ImageButton
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:srcCompat="@drawable/ic_action_delete_mode"
+                    android:id="@+id/options_remove"
+                    android:layout_weight="1"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:contentDescription="@string/options_delete"
+                    android:longClickable="true"
+                    android:tint="#f44336"
+                    android:background="?attr/iconbutton"/>
+
+            <Space
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

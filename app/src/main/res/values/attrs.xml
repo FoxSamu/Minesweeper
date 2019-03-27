@@ -1,0 +1,60 @@
+<resources>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference"/>
+        <attr name="metaButtonBarButtonStyle" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="AppTheme">
+        <attr name="themableIcon" format="color"/>
+        <attr name="darkTheme" format="boolean"/>
+        <attr name="deleteIcon" format="reference"/>
+        <attr name="editIcon" format="reference"/>
+        <attr name="clearHistoryIcon" format="reference"/>
+        <attr name="copyIcon" format="reference"/>
+        <attr name="emTextColor" format="color"/>
+        <attr name="appBarTheme" format="reference"/>
+        <attr name="popupTheme" format="reference"/>
+        <attr name="darkened" format="color"/>
+        <attr name="invmarkColor" format="color"/>
+        <attr name="iconbutton" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="MinesweeperCanvas">
+        <attr name="oneIcon" format="reference"/>
+        <attr name="twoIcon" format="reference"/>
+        <attr name="threeIcon" format="reference"/>
+        <attr name="fourIcon" format="reference"/>
+        <attr name="fiveIcon" format="reference"/>
+        <attr name="sixIcon" format="reference"/>
+        <attr name="sevenIcon" format="reference"/>
+        <attr name="eightIcon" format="reference"/>
+        <attr name="mineIcon" format="reference"/>
+        <attr name="mineWinIcon" format="reference"/>
+        <attr name="noMineIcon" format="reference"/>
+        <attr name="mineFoundIcon" format="reference"/>
+        <attr name="flagIcon" format="reference"/>
+        <attr name="softMarkIcon" format="reference"/>
+        <attr name="inferredFlagIcon" format="reference"/>
+        <attr name="cellSize" format="dimension"/>
+        <attr name="iconSize" format="dimension"/>
+        <attr name="cornerRounding" format="dimension"/>
+        <attr name="gridEnabled" format="boolean"/>
+        <attr name="gridCheckerboard" format="boolean"/>
+        <attr name="redTint" format="color"/>
+        <attr name="greenTint" format="color"/>
+        <attr name="blueTint" format="color"/>
+        <attr name="yellowTint" format="color"/>
+        <attr name="orangeTint" format="color"/>
+        <attr name="purpleTint" format="color"/>
+        <attr name="inverseTint" format="color"/>
+        <attr name="revealedColor" format="color"/>
+        <attr name="unrevealedColor" format="color"/>
+        <attr name="gridColor" format="color"/>
+    </declare-styleable>
+
+</resources>

@@ -1,0 +1,223 @@
+<resources>
+    <string name="app_name" translatable="false">Minesweeper</string>
+    <string name="action_settings">Settings</string>
+    <string name="stat_total">Total Played</string>
+    <string name="stat_winrate">Win Rate</string>
+    <string name="stat_best_time">Best Time</string>
+    <string name="mode_size_format">%1$d × %2$d</string>
+    <string name="mode_mines_format">%1$d mines</string>
+    <string name="mode_played_format">%1$d</string>
+    <string name="mode_win_rate_format">%1$d%%</string>
+    <string name="mode_best_time_format">%1$s</string>
+    <string name="inapplicable">N/A</string>
+    <string name="edit_mode_name">Name</string>
+    <string name="edit_mode_mines">Mine Amount</string>
+    <string name="edit_mode_width">Width</string>
+    <string name="edit_mode_height">Height</string>
+    <string name="edit_mode">Edit</string>
+    <string name="edit_mode_add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="error_name_empty">Name must not be empty!</string>
+    <string name="error_nan">Not a number!</string>
+    <string name="error_range_5_100">Not in range 5-100!</string>
+    <string name="error_range_mines">Too many mines!</string>
+    <string name="error_negative_mines">Use at least one mine!</string>
+    <string name="txt_custom">Custom</string>
+    <string name="msg_removed">Removed</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_resume">Resume</string>
+    <string name="msg_other_game">Do you want to start a new game? Your other game will be lost.</string>
+    <string name="action_startnew">Restart</string>
+    <string name="msg_title_newgame">New Game</string>
+
+    <string name="new_game">New Game</string>
+    <string name="title_activity_game" translatable="false">Minesweeper</string>
+    <string name="main_menu">Main Menu</string>
+    <string name="null_name" translatable="false">NULL</string>
+    <string name="simple_decimal_format" translatable="false">%d</string>
+    <string name="delete_error_msg">You have a paused game with this mode. This game will be lost when deleting this mode. Are you still sure you want to delete this mode?</string>
+    <string name="delete_error_title">Deletion conflict</string>
+    <string name="delete_error_delete">Delete</string>
+    <string name="delete_error_cancel">Cancel</string>
+    <string name="title_activity_tutorial">Tutorial</string>
+    <string name="section_format" translatable="false">Hello World from section: %1$d</string>
+    <string name="tutorial_header_1">Welcome to minesweeper</string>
+    <string name="tutorial_content_1">Minesweeper is about finding all mines on a grid, without clicking directly on a mine. In this tutorial, we explain you how to play the game.\n\nSwipe left to continue.</string>
+    <string name="tutorial_skip">Skip tutorial</string>
+    <string name="tutorial_continue">Continue</string>
+    <string name="tutorial_header_2">Mines</string>
+    <string name="tutorial_content_2">Each grid contains a specific amount of mines. It\'s your task to flag all the mines in a grid.</string>
+    <string name="tutorial_header_3">Numbers</string>
+    <string name="tutorial_content_3">When you press a cell, an area with numbers appears. Each cell shows the amount of mines in the adjacent 8 cells.</string>
+    <string name="tutorial_header_4">Flags</string>
+    <string name="tutorial_content_4">Mines should be flagged with a flag. When all mines are flagged, or all not-mines are revealed, you win the game.</string>
+    <string name="tutorial_header_5">Controls</string>
+    <string name="tutorial_content_5">The circular button in the bottom of the screen switches between modes. Red is reveal mode and green is flag mode.\n\nIn reveal mode, you can reveal unrevealed cells. You will lose when you press a mine. Long pressing in this mode will place a flag instead.\n\nIn flag mode, you can place flags on unrevealed cells. Long pressing in this mode will place a soft mark (question mark).</string>
+    <string name="tutorial_header_6">More controls</string>
+    <string name="tutorial_content_6">When a number sees his amount of adjacent flags, it can be clicked to reveal surrounding cells. This can be done in reveal and in flag mode. Beware, since mines could still be revealed when a flag is placed wrongly.</string>
+    <string name="tutorial_header_7">End of the game</string>
+    <string name="tutorial_content_7">The game ends when you either win or lose. You lose when you reveal a mine. You win the game by either flagging all mines, or by revealing all cells without a mine, leaving only all mines unrevealed.</string>
+    <string name="tutorial_header_8">Ready?</string>
+    <string name="tutorial_content_8">Try it yourself. In the beginning it will be hard to understand, but after some trying you would be able to solve one.</string>
+    <string name="tutorial_try">Try one</string>
+    <string name="tutorial_to_menu">To menu</string>
+    <string name="action_tutorial">Tutorial</string>
+    <string name="dialog_win_title">You won!</string>
+    <string name="dialog_win_found">You\'ve found all %d mines</string>
+    <string name="dialog_win_time">Time</string>
+    <string name="dialog_win_highscore">(new highscore)</string>
+    <string name="dialog_end_new_game">New Game</string>
+    <string name="dialog_end_main_menu">Main Menu</string>
+    <string name="dialog_lose_found">You\'ve found %1$d out of %2$d mines</string>
+    <string name="dialog_lose_revealed">Revealed</string>
+    <string name="dialog_lose_percentage">%d%%</string>
+    <string name="dialog_lose_title">You lost!</string>
+    <string name="dialog_win_time_format">%d:%02d:%02d.%03d</string>
+    <string name="dialog_end_dismiss">OK</string>
+    <string name="options_close">Close menu</string>
+    <string name="options_delete">Delete</string>
+    <string name="options_edit">Edit</string>
+    <string name="options_reset_stats">Reset stats</string>
+    <string name="options_copy">Copy</string>
+    <string name="options_play">Play</string>
+    <string name="options_menu">More options</string>
+    <string name="options_info">Info</string>
+    <string name="edit_mode_edit">Edit</string>
+    <string name="edit_mode_copy">Copy</string>
+    <string name="info_games_played">Games played</string>
+    <string name="info_games_won">Games won</string>
+    <string name="info_games_lost">Games lost</string>
+    <string name="info_win_rate">Win rate</string>
+    <string name="info_best_time">Best time</string>
+    <string name="info_games_discarded">Games discarded</string>
+    <string name="info_mines">Amount of mines</string>
+    <string name="info_dimensions">Dimensions</string>
+    <string name="mode_name_very_easy">Very Easy</string>
+    <string name="mode_name_easy">Easy</string>
+    <string name="edit_mode_error_invalid_name">Name may not start with \'@\'</string>
+    <string name="mode_name_normal">Normal</string>
+    <string name="mode_name_hard">Hard</string>
+    <string name="mode_name_very_hard">Very Hard</string>
+    <string name="discard">Discard</string>
+    <string name="add_mode">Add mode</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value"/>
+    <string name="setting_dark_theme">Use dark theme</string>
+    <string name="setting_dark_theme_desc">Uses a dark user interface, instead of the light one. Changing this will restart the app.</string>
+    <string name="settings_header_appearance">Appearance</string>
+    <string name="setting_mode_button_pos_left">Left</string>
+    <string name="setting_mode_button_pos_center">Middle</string>
+    <string name="setting_mode_button_pos_right">Right</string>
+    <string name="setting_mode_button_position">Mode button position</string>
+    <string name="setting_mode_button_position_desc">Determines the place of the mode switch button in the game.</string>
+    <string name="setting_cell_size">Cell size</string>
+    <string name="setting_cell_size_desc">Sets the size of the game cells.</string>
+    <string name="setting_icon_size">Icon size</string>
+    <string name="setting_icon_size_desc">Size of the in-game icons.</string>
+    <string name="settings_header_behavior">Behavior &amp; Controls</string>
+    <string name="setting_corner_radius">Game corner radius</string>
+    <string name="setting_corner_radius_desc">Sets the corner radius of the game and the unrevealed cells.</string>
+    <string name="setting_checkerboard">Show checkerboard grid</string>
+    <string name="setting_checkerboard_desc">Enables the checkerboard grid on the game board.</string>
+    <string name="setting_chunk_size">Render chunk size</string>
+    <string name="setting_chunk_size_desc">Size of a particular part that updates when a cell has changed there. Using higher values may drop performance but saves RAM usage.</string>
+    <string name="setting_mark_tapped_mine">Mark tapped mine</string>
+    <string name="setting_mark_tapped_mine_desc">Mark the revealed mine on lose</string>
+    <string name="setting_end_dialog">Dialog on game end</string>
+    <string name="setting_end_dialog_desc">When to show a dialog after the game has ended.</string>
+    <string name="setting_end_dialog_never">Never</string>
+    <string name="setting_end_dialog_win">On win</string>
+    <string name="setting_end_dialog_lose">On lose</string>
+    <string name="setting_end_dialog_always">Always</string>
+    <string name="setting_inferred_flags">Show inferred flags</string>
+    <string name="setting_inferred_flags_desc">Show flags inferred from surrounding numbers.</string>
+    <string name="settings_header_hints">Hints</string>
+    <string name="settings_header_advanced">Advanced</string>
+    <string name="setting_win_condition">Win when...</string>
+    <string name="setting_win_condition_desc">Specifies under which condition a game is won.</string>
+    <string name="setting_win_condition_all_revealed">All not-mines are revealed</string>
+    <string name="setting_win_condition_all_flags">All mines are flagged</string>
+    <string name="setting_win_condition_flag_revealed">All not-mines are revealed or all mines are flagged</string>
+    <string name="setting_win_condition_all_inferred">All mines have an (inferred) flag</string>
+    <string name="setting_long_press">Enable long pressing</string>
+    <string name="setting_long_press_desc">When enabled, you can hold a cell to flag or to place a question mark in flag mode.</string>
+    <string name="setting_vibration">Vibration</string>
+    <string name="setting_vibration_desc">Vibrate when tapping a mine.</string>
+    <string name="setting_chording">Enable number tap</string>
+    <string name="setting_chording_desc">Enable that numbers with enough flags could be tapped to reveal surrounding cells.</string>
+    <string name="setting_keep_screen_on">Keep screen on</string>
+    <string name="setting_keep_screen_on_desc">Prevent your device from automatically locking the screen during a game.</string>
+    <string name="setting_mark_too_many_flags">Mark numbers with too many flags</string>
+    <string name="setting_mark_enough_flags">Mark numbers with enough flags</string>
+    <string name="setting_disable_flags_around_completed">Prevent too much flags around a number</string>
+    <string name="setting_disable_flags_over_limit">Prevent too much flags in total</string>
+    <string name="setting_tap_to_infer">Tap number to infer flags</string>
+    <string name="setting_tap_to_infer_desc">When enabled, numbers that have inferred flags could be tapped to place all flags.</string>
+    <string name="setting_mark_infer_numbers">Mark numbers that infer flags</string>
+    <string name="setting_mark_infer_numbers_desc">Indicate numbers of which the unrevealed neighbors could all be flagged.</string>
+    <string name="setting_hint_button">Show hint button</string>
+    <string name="setting_start_policy">Starting policy</string>
+    <string name="setting_start_policy_desc">Determines how mines are generated after the first tap.</string>
+    <string name="setting_start_policy_no_ensuring">Totally random, no safe start</string>
+    <string name="setting_start_policy_basic">Random, but any tapped mine is moved</string>
+    <string name="setting_start_policy_advanced">Ensure a region when possible</string>
+    <string name="face_icon">Face (restart)</string>
+    <string name="pause_play">Pause/Play</string>
+    <string name="hint_inferred_flag">This number sees only %d unrevealed cells</string>
+    <string name="hint_enough_flags">This number is completed</string>
+    <string name="hint_too_many_flags">This number has too many flags</string>
+    <string name="hint_only_options_for_other">Only options for this number all complete another number</string>
+    <string name="hint_flag_zero_conflict">Flag next to an empty cell</string>
+    <string name="hint_guess">No hint available: you\'ll need to guess</string>
+
+    <!-- Example settings for Notifications -->
+
+</resources>

@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+              android:background="?android:attr/windowBackground"
+              android:elevation="16dp"
+              app:behavior_hideable="true"
+              app:behavior_peekHeight="80dp"
+              android:id="@+id/bottom_sheet"
+              android:clickable="true"
+              android:focusable="true">
+
+    <android.support.v7.widget.CardView
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:contentPadding="0dp"
+            app:cardElevation="4dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <android.support.v7.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary"
+                    android:theme="?attr/actionBarTheme"
+                    android:minHeight="?attr/actionBarSize"
+                    android:id="@+id/bottom_sheet_title">
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                    <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:layout_weight="2"
+                            android:id="@+id/info_title"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large.Inverse"
+                            tools:text="[title]"
+                            android:textColor="#ffffff">
+
+                    </TextView>
+
+                    <Button
+                            android:text="@string/new_game"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_play"
+                            android:backgroundTint="?attr/colorAccent"
+                            android:textColor="#ffffff"/>
+                </LinearLayout>
+            </android.support.v7.widget.Toolbar>
+
+            <net.rgsw.minesweeper.main.PercentageBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/winBar"
+                    />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/bottom_sheet_sv">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/bottom_sheet_info">
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_dimensions"
+                            android:layout_marginEnd="8dp"
+                            android:contentDescription="TODO"
+                            android:tint="#607d8b"/>
+
+                    <TextView
+                            android:text="@string/info_dimensions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_dimensions"
+                            android:layout_weight="0"
+                            tools:text="[dimensions]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_amount_mines"
+                            android:layout_marginRight="8dp"
+                            android:tint="#f44336"/>
+
+                    <TextView
+                            android:text="@string/info_mines"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_mines"
+                            android:layout_weight="0"
+                            tools:text="[mines]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_win_rate"
+                            android:layout_marginRight="8dp"
+                            android:tint="?attr/themableIcon"/>
+
+                    <TextView
+                            android:text="@string/info_win_rate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_win_rate"
+                            android:layout_weight="0"
+                            tools:text="[rate]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_games_played"
+                            android:layout_marginRight="8dp"
+                            android:tint="#00bcd4"/>
+
+                    <TextView
+                            android:text="@string/info_games_played"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_games_played"
+                            android:layout_weight="0"
+                            tools:text="[games]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_games_won"
+                            android:layout_marginRight="8dp"
+                            android:tint="#4caf50"/>
+
+                    <TextView
+                            android:text="@string/info_games_won"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_games_won"
+                            android:layout_weight="0"
+                            tools:text="[won]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_games_lost"
+                            android:layout_marginRight="8dp"
+                            android:tint="#f44336"/>
+
+                    <TextView
+                            android:text="@string/info_games_lost"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_games_lost"
+                            android:layout_weight="0"
+                            tools:text="[lost]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_games_discarded"
+                            android:layout_marginRight="8dp"
+                            android:tint="#ff9800"/>
+
+                    <TextView
+                            android:text="@string/info_games_discarded"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_games_discarded"
+                            android:layout_weight="0"
+                            tools:text="[discarded]"/>
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_info_best_time"
+                            android:layout_marginRight="8dp"
+                            android:tint="#3f51b5"/>
+
+                    <TextView
+                            android:text="@string/info_best_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="?attr/emTextColor"/>
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/info_best_time"
+                            android:layout_weight="0"
+                            tools:text="[time]"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                    <Button
+                            android:text="@string/options_edit"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_edit_color"
+                            android:capitalize="words"
+                            android:layout_weight="1"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:gravity="left|center_vertical"
+                            android:drawablePadding="8dp"
+                            android:onClick="onEditClick"
+                            android:id="@+id/info_edit_btn"
+                            android:backgroundTint="#3f51b5"
+                            />
+
+                    <Button
+                            android:text="@string/options_delete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_delete_color"
+                            android:capitalize="words"
+                            android:layout_weight="1"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:gravity="left|center_vertical"
+                            android:drawablePadding="8dp"
+                            android:onClick="onDeleteClick"
+                            android:id="@+id/info_delete_btn"
+                            android:backgroundTint="#f44336"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical">
+
+                    <Button
+                            android:text="@string/options_reset_stats"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_clear_history_color"
+                            android:capitalize="words"
+                            android:layout_weight="1"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:gravity="left|center_vertical"
+                            android:drawablePadding="8dp"
+                            android:onClick="onClearHistoryClick"
+                            android:backgroundTint="#ffa000"/>
+
+                    <Button
+                            android:text="@string/options_copy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="?attr/copyIcon"
+                            android:capitalize="words"
+                            android:layout_weight="1"
+                            style="?android:attr/borderlessButtonStyle"
+                            android:gravity="left|center_vertical"
+                            android:drawablePadding="8dp"
+                            android:onClick="onCopyClick"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
