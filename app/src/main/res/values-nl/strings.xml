@@ -170,4 +170,6 @@
     <string name="edit_error_name_char">Eerste letter mag geen \'@\' zijn</string>
     <string name="mode_name_longstretched">Langwerpig</string>
     <string name="mode_name_tiny">Klein</string>
+    <string name="splash_developer">Door RGSW</string>
+    <string name="splash_copyright">Copyright © 2019 RedGalaxySoftware</string>
 </resources>

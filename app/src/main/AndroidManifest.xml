@@ -8,10 +8,12 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="false">
+        <activity android:name=".about.SplashActivity">
+        </activity>
         <activity
                 android:name=".settings.SettingsActivity"
-                android:theme="@style/AppTheme"
-                android:parentActivityName=".main.MainActivity">
+                android:parentActivityName=".main.MainActivity"
+                android:theme="@style/AppTheme">
         </activity>
         <activity
                 android:name=".tutorial.TutorialActivity"

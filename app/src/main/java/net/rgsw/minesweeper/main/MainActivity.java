@@ -27,6 +27,7 @@ import net.rgsw.ctable.tag.TagInteger;
 import net.rgsw.ctable.tag.TagList;
 import net.rgsw.ctable.tag.TagStringCompound;
 import net.rgsw.minesweeper.R;
+import net.rgsw.minesweeper.about.SplashActivity;
 import net.rgsw.minesweeper.game.GameActivity;
 import net.rgsw.minesweeper.settings.Configuration;
 import net.rgsw.minesweeper.settings.SettingsActivity;
@@ -59,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
+
+        if( savedInstanceState == null ) {
+            // Show splash screen
+            startActivity( new Intent( this, SplashActivity.class ) );
+        }
+
         Configuration.init( this );
         setTheme( Configuration.useDarkTheme.getValue() ? R.style.AppTheme_Dark_NoActionBar : R.style.AppTheme_NoActionBar );
 
