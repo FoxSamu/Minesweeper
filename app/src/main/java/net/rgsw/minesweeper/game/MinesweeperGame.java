@@ -51,8 +51,12 @@ public class MinesweeperGame implements IGame {
         if( invalidator != null ) invalidator.invalidateAll();
     }
 
+    private void invalidateArea( int x1, int y1, int x2, int y2 ) {
+        if( invalidator != null ) invalidator.invalidateArea( x1, y1, x2, y2 );
+    }
+
     /**
-     * Resets the game for reusing
+     * Resets the game for reusing. This invalidates all cells if an invalidator is specified.
      */
     public void reset() {
         mines = new boolean[ mode.getWidth() * mode.getHeight() ];
@@ -77,7 +81,12 @@ public class MinesweeperGame implements IGame {
         invalidateAll();
     }
 
-    public void startAt( int x, int y, Flag flag ) {
+    /**
+     * Handle the first tap. This is automatically called in {@link #doInput} when the game was not yet initialized.
+     * @param x X coordinate of the tapped cell
+     * @param y Y coordinate of the tapped cell
+     */
+    public void startAt( int x, int y ) {
         if( paused ) return;
         // Compute no-mine radius... Try to retain a 3x3 square of no mines, but fallback on 1x1 if not enough empty
         // space for that.
@@ -124,6 +133,7 @@ public class MinesweeperGame implements IGame {
 
         startTime = System.currentTimeMillis();
 
+        // Push something processable to the stack
         processingStack.push( new Location( x, y ) );
 
         process();
@@ -131,10 +141,16 @@ public class MinesweeperGame implements IGame {
         checkWin();
     }
 
+    /**
+     * Try to reveal cells on stack. When a revealed cell is empty (no number) it will push it adjacents to the stack,
+     * making this method iteratively reveal an empty area around pushed cells.
+     */
     private void process() {
         while( !processingStack.empty() ) {
             Location l = processingStack.pop();
             boolean revealed = tryReveal( l.x, l.y );
+
+            // We've found an empty cell: push adjacent to stack for being processed too
             if( revealed && adjacent[ index( l ) ] == 0 ) {
                 pushAdjacent( l.x, l.y );
             }
@@ -146,29 +162,70 @@ public class MinesweeperGame implements IGame {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
                 if( x1 == x && y1 == y ) continue; // Skip center tile
                 if( outOfRange( x1, y1 ) ) continue; // Skip out-of-range tiles
-                if( isFlagOrSM( x1, y1 ) ) continue; // Skip marked tiles
+                if( isFlagOrSoftMark( x1, y1 ) ) continue; // Skip marked tiles
                 if( isRevealed( x1, y1 ) ) continue; // Skip revealed tiles
                 processingStack.push( new Location( x1, y1 ) );
             }
         }
     }
 
+    /**
+     * Checks whether the cell at specified coordinates has a mine.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when there was a mine at specified coords.
+     */
     public boolean isMine( int x, int y ) {
         return mines[ index( x, y ) ];
     }
 
+    /**
+     * Checks whether the cell at specified coordinates is revealed.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when the cell at specified coords is revealed.
+     */
     public boolean isRevealed( int x, int y ) {
         return revealed[ index( x, y ) ];
     }
 
-    public boolean isFlagOrSM( int x, int y ) {
+    /**
+     * Checks whether a cell at specified coordinates has either a flag or a soft mark
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when the cell had a flag or a soft mark
+     */
+    public boolean isFlagOrSoftMark( int x, int y ) {
+        if( isRevealed( x, y ) ) return false;
         return flags[ index( x, y ) ] != null;
     }
 
+    /**
+     * Checks whether a cell has a flag
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when the cell had a flag
+     */
     public boolean isFlagged( int x, int y ) {
+        if( isRevealed( x, y ) ) return false;
         return flags[ index( x, y ) ] == Flag.FLAG;
     }
 
+    /**
+     * Checks whether a cell has a soft mark (question mark)
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when the cell had a soft mark
+     */
+    public boolean isSoftMarked( int x, int y ) {
+        if( isRevealed( x, y ) ) return false;
+        return flags[ index( x, y ) ] == Flag.SOFT_MARK;
+    }
+
+    /**
+     * Ends the game. This invalidates all cells if an invalidator is specified.
+     * @param won If the game is won
+     */
     public void end( boolean won ) {
         ended = true;
         this.won = won;
@@ -176,21 +233,34 @@ public class MinesweeperGame implements IGame {
         invalidateAll();
     }
 
+    /**
+     * Pauses the game. Paused games could not be interacted with.
+     * @see #resume()
+     */
     public void pause() {
-        this.time += System.currentTimeMillis() - this.startTime;
+        time += System.currentTimeMillis() - startTime;
         paused = true;
     }
 
+    /**
+     * Resumes the game from paused state.
+     * @see #pause()
+     */
     public void resume() {
         paused = false;
-        this.startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
     }
 
-
+    /**
+     * Reveals the cell at specified coordinates, or ends the game without winning when a mine was revealed. When the
+     * specified cell is flagged or soft marked, this does nothing.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     */
     public void revealOrLose( int x, int y ) {
-        if( isFlagOrSM( x, y ) ) return;
+        if( isFlagOrSoftMark( x, y ) ) return;
         if( isMine( x, y ) ) {
-            tappedMineX = x;
+            tappedMineX = x; // Save tapped mine to mark that
             tappedMineY = y;
             end( false );
         }
@@ -201,6 +271,11 @@ public class MinesweeperGame implements IGame {
         process();
     }
 
+    /**
+     * Calls {@link #revealOrLose} on each adjacent cell to the specified coordinates
+     * @param x X coordinate
+     * @param y Y coordinate
+     */
     public void revealOrLoseAdjacent( int x, int y ) {
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
@@ -212,7 +287,12 @@ public class MinesweeperGame implements IGame {
         }
     }
 
-    public void flag( int x, int y ) {
+    /**
+     * Places a flag on the specified cell, or removes it when already flagged
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     */
+    public void doFlag( int x, int y ) {
         int i = index( x, y );
 
         Flag f = flags[ i ];
@@ -229,7 +309,13 @@ public class MinesweeperGame implements IGame {
         invalidate( x, y );
     }
 
-    public void softMark( int x, int y ) {
+    /**
+     * Places a soft mark on the specified cell, or removes it when already soft marked. Does nothing when the cell was
+     * flagged.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     */
+    public void doSoftMark( int x, int y ) {
         int i = index( x, y );
 
         Flag f = flags[ i ];
@@ -239,14 +325,27 @@ public class MinesweeperGame implements IGame {
         invalidate( x, y );
     }
 
-    public void click( int x, int y, Flag flag ) {
+    /**
+     * Performs one user-input action.<br>
+     * - When paused or when the game is done, this does nothing.<br>
+     * - When coordinate out of bounds, this does nothing either.<br>
+     * - When not initialized, this initializes the game by calling 'startAt'.<br>
+     * - When the specified cell is a visible, and completed number, this will reveal all adjacent cells<br>
+     * - When the specified cell is not revealed, it will either flag, soft-mark or dig it, depending on input mode.<br>
+     * In other conditions, it does nothing.
+     * @param x    X coordinate of the input
+     * @param y    Y coordinate of the input
+     * @param flag The flagging/input mode. When {@code null} it will dig.
+     */
+    public void doInput( int x, int y, Flag flag ) {
         if( paused || ended ) return;
+        if( outOfRange( x, y ) ) return;
+
         if( !initialized ) {
-            startAt( x, y, flag );
+            startAt( x, y );
             initialized = true;
             return;
         }
-        if( outOfRange( x, y ) ) return;
         int i = index( x, y );
         if( isRevealed( x, y ) ) {
             int adj = adjacent[ i ];
@@ -259,9 +358,9 @@ public class MinesweeperGame implements IGame {
             if( flag == null ) {
                 revealOrLose( x, y );
             } else if( flag == Flag.FLAG ) {
-                flag( x, y );
+                doFlag( x, y );
             } else {
-                softMark( x, y );
+                doSoftMark( x, y );
             }
         }
 
@@ -269,21 +368,46 @@ public class MinesweeperGame implements IGame {
         checkWin();
     }
 
+    /**
+     * Reveals the specified cell unless it has a mine
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when the cell was revealed
+     */
     public boolean tryReveal( int x, int y ) {
         if( isMine( x, y ) ) return false;
         revealed[ index( x, y ) ] = true;
-        invalidate( x, y );
+        if( Configuration.showInferredFlags.getValue() ) {
+            // Update surrounding area to invalidate inferred flag updates
+            invalidateArea( x - 1, y - 1, x + 1, y + 1 );
+        } else {
+            // No inferred flagging, save performance and invalidate only this cell
+            invalidate( x, y );
+        }
         return true;
     }
 
+    /**
+     * Location to array index
+     */
     private int index( Location loc ) {
         return loc.x * height + loc.y;
     }
 
+    /**
+     * Location to array index
+     */
     private int index( int x, int y ) {
         return x * height + y;
     }
 
+    /**
+     * Counts the amount of mines adjacent to the specified cell. This computes the number that would be shown in the
+     * specified cell.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return The amount of adjacent mines
+     */
     private int findAdjacentMines( int x, int y ) {
         int mines = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
@@ -297,6 +421,13 @@ public class MinesweeperGame implements IGame {
         return mines;
     }
 
+    /**
+     * Counts the amount of flags adjacent to the specified cell. Used in handling number taps, to check if a number
+     * could be tapped.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return The amount of adjacent flags
+     */
     private int findAdjacentFlags( int x, int y ) {
         int flags = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
@@ -304,13 +435,18 @@ public class MinesweeperGame implements IGame {
                 if( x1 == x && y1 == y ) continue; // Skip center tile
                 if( outOfRange( x1, y1 ) ) continue; // Skip out-of-range tiles
                 if( isRevealed( x1, y1 ) ) continue; // Skip revealed tiles
-                int i = index( x1, y1 );
-                if( this.flags[ i ] == Flag.FLAG ) flags++;
+                if( isFlagged( x1, y1 ) ) flags++;
             }
         }
         return flags;
     }
 
+    /**
+     * Checks whether the specified coordinate lies in the game board, i.e. if they point to a valid cell.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return True when the specified coords point to a valid cell.
+     */
     private boolean outOfRange( int x, int y ) {
         return x >= width || y >= height || x < 0 || y < 0;
     }
@@ -322,7 +458,7 @@ public class MinesweeperGame implements IGame {
         if( isRevealed( x, y ) ) {
             state = ECellState.values()[ adjacent[ index( x, y ) ] ];
         } else {
-            if( isFlagged( x, y ) ) { state = ECellState.FLAGGED; } else if( isFlagOrSM( x, y ) ) {
+            if( isFlagged( x, y ) ) { state = ECellState.FLAGGED; } else if( isFlagOrSoftMark( x, y ) ) {
                 state = ECellState.SOFT_MARKED;
             }
         }
@@ -381,20 +517,27 @@ public class MinesweeperGame implements IGame {
         return amountFlags;
     }
 
+    /**
+     * Whether the game is paused or not.
+     * @return True if paused
+     */
     public boolean isPaused() {
         return paused;
     }
 
+    /**
+     * Computes the time that this game is running. This is always 0 when not initialized.
+     * @return The time in milliseconds
+     */
     public long getTimeMS() {
         if( !initialized ) return 0;
         if( ended || paused ) return time;
         return time + ( System.currentTimeMillis() - startTime );
     }
 
-    public enum Flag {
-        FLAG, SOFT_MARK
-    }
-
+    /**
+     * Converts flag array to a byte array.
+     */
     private byte[] flagsToByteArr() {
         byte[] bytes = new byte[ flags.length ];
         for( int i = 0; i < flags.length; i++ ) {
@@ -406,6 +549,9 @@ public class MinesweeperGame implements IGame {
         return bytes;
     }
 
+    /**
+     * Converts mines array to a byte array
+     */
     private byte[] minesToByteArr() {
         byte[] bytes = new byte[ mines.length ];
         for( int i = 0; i < mines.length; i++ ) {
@@ -415,6 +561,9 @@ public class MinesweeperGame implements IGame {
         return bytes;
     }
 
+    /**
+     * Converts revealed array to a byte array
+     */
     private byte[] revealedToByteArr() {
         byte[] bytes = new byte[ revealed.length ];
         for( int i = 0; i < revealed.length; i++ ) {
@@ -424,6 +573,9 @@ public class MinesweeperGame implements IGame {
         return bytes;
     }
 
+    /**
+     * Converts number array to a byte array
+     */
     private byte[] adjToByteArr() {
         byte[] bytes = new byte[ adjacent.length ];
         for( int i = 0; i < adjacent.length; i++ ) {
@@ -432,6 +584,9 @@ public class MinesweeperGame implements IGame {
         return bytes;
     }
 
+    /**
+     * Reads number array from byte array
+     */
     private void adjFromByteArray( byte[] arr ) {
         int[] adjs = new int[ arr.length ];
         for( int i = 0; i < arr.length; i++ ) {
@@ -440,6 +595,9 @@ public class MinesweeperGame implements IGame {
         adjacent = adjs;
     }
 
+    /**
+     * Reads mines array from byte array
+     */
     private void minesFromByteArray( byte[] arr ) {
         boolean[] mines = new boolean[ arr.length ];
         for( int i = 0; i < arr.length; i++ ) {
@@ -448,6 +606,9 @@ public class MinesweeperGame implements IGame {
         this.mines = mines;
     }
 
+    /**
+     * Reads revealed array from byte array
+     */
     private void revealedFromByteArray( byte[] arr ) {
         boolean[] revealed = new boolean[ arr.length ];
         for( int i = 0; i < arr.length; i++ ) {
@@ -456,6 +617,9 @@ public class MinesweeperGame implements IGame {
         this.revealed = revealed;
     }
 
+    /**
+     * Reads flag array from byte array
+     */
     private void flagsFromByteArray( byte[] arr ) {
         Flag[] flags = new Flag[ arr.length ];
         for( int i = 0; i < arr.length; i++ ) {
@@ -465,6 +629,11 @@ public class MinesweeperGame implements IGame {
         this.flags = flags;
     }
 
+    /**
+     * Computes the amount of unrevealed cells adjacent to the specified coordinates. Used to infer flags.
+     * @param x X coordinate
+     * @param y Y coordinate
+     */
     private int amountOfUnrevealedAdjacentTiles( int x, int y ) {
         int amount = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
@@ -477,6 +646,13 @@ public class MinesweeperGame implements IGame {
         return amount;
     }
 
+    /**
+     * Tries to infer a flag to the specified coordinates, by checking surrounding numbers if they could be completed
+     * by flagging their neighbors.
+     * @param x X coordinate
+     * @param y Y coordinate
+     * @return True if a flag could be inferred, false otherwise
+     */
     private boolean inferFlag( int x, int y ) {
         if( isRevealed( x, y ) ) return false;
         if( isFlagged( x, y ) ) return false;
@@ -498,6 +674,9 @@ public class MinesweeperGame implements IGame {
         return false;
     }
 
+    /**
+     * Ends the game when won according to the win policy setting.
+     */
     public void checkWin() {
         boolean allComplete;
 
@@ -530,6 +709,10 @@ public class MinesweeperGame implements IGame {
         }
     }
 
+    /**
+     * Saves the game to a binary compound
+     * @param cpd The string-value compound
+     */
     public void save( TagStringCompound cpd ) {
         cpd.set( "paused", this.paused );
         cpd.set( "ended", this.ended );
@@ -552,6 +735,10 @@ public class MinesweeperGame implements IGame {
         cpd.set( "mode", mode );
     }
 
+    /**
+     * Loads the game from a binary compound
+     * @param cpd The string-value compound
+     */
     public void load( TagStringCompound cpd ) {
         this.initialized = cpd.getBoolean( "initialized" );
         if( !this.initialized ) {
@@ -579,14 +766,24 @@ public class MinesweeperGame implements IGame {
         this.mode = new Mode( mode );
     }
 
+    /**
+     * Returns the mode of this game, including the latest stats
+     */
     public Mode getMode() {
         return mode;
     }
 
+    /**
+     * Whether the game is initialized in it's current state
+     * @return True if initialized
+     */
     public boolean isInitialized() {
         return initialized;
     }
 
+    /**
+     * Returns the amount of mines that have a flag placed correctly on it.
+     */
     public int getFlaggedMines() {
         int found = 0;
         for( int i = 0; i < mines.length; i++ ) {
@@ -599,6 +796,9 @@ public class MinesweeperGame implements IGame {
         return found;
     }
 
+    /**
+     * Returns the revealed cell ratio, which is {@code revealed / all}.
+     */
     public double getRevealedRelative() {
         int rev = 0;
         for( int i = 0; i < revealed.length; i++ ) {
@@ -609,6 +809,10 @@ public class MinesweeperGame implements IGame {
         return ( double ) rev / revealed.length;
     }
 
+    /**
+     * Set an invalidator to listen to cell updates
+     * @param invalidator An invalidator, or null
+     */
     public void setInvalidator( ICellInvalidator invalidator ) {
         this.invalidator = invalidator;
     }
@@ -628,5 +832,9 @@ public class MinesweeperGame implements IGame {
             Location l = ( Location ) o;
             return l.x == x && l.y == y;
         }
+    }
+
+    public enum Flag {
+        FLAG, SOFT_MARK
     }
 }

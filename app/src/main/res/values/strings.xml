@@ -94,12 +94,12 @@
     <string name="info_games_discarded">Games discarded</string>
     <string name="info_mines">Amount of mines</string>
     <string name="info_dimensions">Dimensions</string>
-    <string name="mode_name_very_easy">Very Easy</string>
-    <string name="mode_name_easy">Easy</string>
+    <string name="mode_name_very_easy">Simple</string>
+    <string name="mode_name_easy">Beginner</string>
     <string name="edit_mode_error_invalid_name">Name may not start with \'@\'</string>
     <string name="mode_name_normal">Normal</string>
-    <string name="mode_name_hard">Hard</string>
-    <string name="mode_name_very_hard">Very Hard</string>
+    <string name="mode_name_hard">Expert</string>
+    <string name="mode_name_very_hard">Master</string>
     <string name="discard">Discard</string>
     <string name="add_mode">Add mode</string>
 
@@ -217,6 +217,13 @@
     <string name="hint_only_options_for_other">Only options for this number all complete another number</string>
     <string name="hint_flag_zero_conflict">Flag next to an empty cell</string>
     <string name="hint_guess">No hint available: you\'ll need to guess</string>
+    <string name="times" translatable="false">×</string>
+    <string name="edit_error_size">Size not between 5×5 and 100×100</string>
+    <string name="edit_error_mines_low">At least one mine needed</string>
+    <string name="edit_error_mines_high">Too much mines</string>
+    <string name="edit_error_name_char">First char must not be \'@\'</string>
+    <string name="mode_name_longstretched">Longstretched</string>
+    <string name="mode_name_tiny">Tiny</string>
 
     <!-- Example settings for Notifications -->
 

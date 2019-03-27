@@ -383,14 +383,14 @@ public class GameActivityLgc extends AppCompatActivity {
 
     // Called when a cell is pressed
     public void onClick( MinesweeperCanvasLegacy canvas, int x, int y ) {
-        game.click( x, y, flagMode ? MinesweeperGame.Flag.FLAG : null );
+        game.doInput( x, y, flagMode ? MinesweeperGame.Flag.FLAG : null );
         canvas.invalidate();
         updateGameState();
     }
 
     // Called when a cell is long-pressed
     public void onLongClick( MinesweeperCanvasLegacy canvas, int x, int y ) {
-        game.click( x, y, flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG );
+        game.doInput( x, y, flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG );
         canvas.invalidate();
         updateGameState();
     }

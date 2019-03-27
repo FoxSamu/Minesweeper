@@ -49,6 +49,18 @@ public class Mode {
         this.isNative = compound.optBoolean( "native", false );
     }
 
+    public Mode( TagStringCompound compound, Mode old ) {
+        this.title = old.title;
+        this.mines = old.mines;
+        this.width = old.width;
+        this.height = old.height;
+        this.completed = compound.optInteger( "completed", 0 );
+        this.played = compound.optInteger( "played", 0 );
+        this.wins = compound.optInteger( "wins", 0 );
+        this.bestTimeMS = compound.optLong( "best", -1 );
+        this.isNative = compound.optBoolean( "native", false );
+    }
+
     public int getHeight() {
         return height;
     }

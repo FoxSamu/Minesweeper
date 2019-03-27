@@ -89,12 +89,12 @@
     <string name="info_games_discarded">Spellen geannuleerd</string>
     <string name="info_mines">Aantal mijnen</string>
     <string name="info_dimensions">Afmetingen</string>
-    <string name="mode_name_very_easy">Heel Makkelijk</string>
-    <string name="mode_name_easy">Makkelijk</string>
+    <string name="mode_name_very_easy">Simpel</string>
+    <string name="mode_name_easy">Beginner</string>
     <string name="edit_mode_error_invalid_name">Naam mag niet beginnen met \'@\'</string>
     <string name="mode_name_normal">Normaal</string>
-    <string name="mode_name_hard">Moeilijk</string>
-    <string name="mode_name_very_hard">Erg Moeilijk</string>
+    <string name="mode_name_hard">Expert</string>
+    <string name="mode_name_very_hard">Master</string>
     <string name="discard">Weggooien</string>
     <string name="add_mode">Modus toevoegen</string>
     <string name="setting_dark_theme">Donker thema gebruiken</string>
@@ -164,4 +164,10 @@
     <string name="hint_only_options_for_other">Alle mogelijkheden voor dit getal maken ander getal compleet</string>
     <string name="hint_flag_zero_conflict">Vlaggetje naast een leeg hokje</string>
     <string name="hint_guess">Geen hint beschikbaar: je zal moeten gokken</string>
+    <string name="edit_error_size">Grootte niet tussen 5×5 en 100×100</string>
+    <string name="edit_error_mines_low">Minimaal één mijn nodig</string>
+    <string name="edit_error_mines_high">Te veel mijnen</string>
+    <string name="edit_error_name_char">Eerste letter mag geen \'@\' zijn</string>
+    <string name="mode_name_longstretched">Langwerpig</string>
+    <string name="mode_name_tiny">Klein</string>
 </resources>

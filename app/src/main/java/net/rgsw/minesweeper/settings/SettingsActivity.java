@@ -47,7 +47,7 @@ public class SettingsActivity extends AppCompatActivity {
                 SettingsEntry.header( this, "", R.string.settings_header_hints ),
                 SettingsEntry.toggle( this, "", R.string.setting_inferred_flags, R.string.setting_inferred_flags_desc, Configuration.showInferredFlags.getValue(), ( entry ) -> Configuration.showInferredFlags.setValue( entry.getValue() ) ),
                 SettingsEntry.header( this, "", R.string.settings_header_advanced ),
-                SettingsEntry.slider( this, "", R.string.setting_chunk_size, R.string.setting_chunk_size_desc, R.string.simple_decimal_format, 0, 30, Configuration.gameChunkSize.getValue(), ( entry ) -> Configuration.gameChunkSize.setValue( entry.getValue() ) )
+                SettingsEntry.slider( this, "", R.string.setting_chunk_size, R.string.setting_chunk_size_desc, R.string.simple_decimal_format, 1, 30, Configuration.gameChunkSize.getValue(), ( entry ) -> Configuration.gameChunkSize.setValue( entry.getValue() ) )
         );
 
         listView.setAdapter( settings );

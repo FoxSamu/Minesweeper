@@ -202,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
             list = new TagList();
             recreateNatives = true;
         }
+
         listAdapter.load( list );
         listAdapter.notifyDataSetChanged();
 
@@ -225,8 +226,10 @@ public class MainActivity extends AppCompatActivity {
         listAdapter.addItem( new Mode( "@very_easy", 4, 6, 6 ).makeNative() );
         listAdapter.addItem( new Mode( "@easy", 10, 9, 9 ).makeNative() );
         listAdapter.addItem( new Mode( "@normal", 40, 16, 16 ).makeNative() );
-        listAdapter.addItem( new Mode( "@hard", 99, 25, 25 ).makeNative() );
-        listAdapter.addItem( new Mode( "@very_hard", 200, 35, 35 ).makeNative() );
+        listAdapter.addItem( new Mode( "@hard", 99, 16, 30 ).makeNative() );
+        listAdapter.addItem( new Mode( "@very_hard", 200, 35, 25 ).makeNative() );
+        listAdapter.addItem( new Mode( "@longstretched", 99, 100, 8 ).makeNative() );
+        listAdapter.addItem( new Mode( "@tiny", 8, 5, 5 ).makeNative() );
 
         Intent intent = new Intent( this, TutorialActivity.class );
         startActivityForResult( intent, 0 );
@@ -261,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if( id == R.id.menu_resume ) {
-            resumeGame( ( Mode ) listAdapter.getItem( currentGame ), currentGame );
+            resumeGame( listAdapter.getItem( currentGame ), currentGame );
             return true;
         }
 
@@ -300,16 +303,16 @@ public class MainActivity extends AppCompatActivity {
 
     public void doPlayGame() {
         if( currentGame < 0 ) {
-            playGame( ( Mode ) listAdapter.getItem( currentOptionsPos ), currentOptionsPos );
+            playGame( listAdapter.getItem( currentOptionsPos ), currentOptionsPos );
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder( this );
         builder.setMessage( R.string.msg_other_game )
                 .setNegativeButton( R.string.action_resume, ( dialog, which ) -> {
-                    resumeGame( ( Mode ) listAdapter.getItem( currentGame ), currentGame );
+                    resumeGame( listAdapter.getItem( currentGame ), currentGame );
                 } )
                 .setPositiveButton( R.string.action_startnew, ( dialog, which ) -> {
-                    playGame( ( Mode ) listAdapter.getItem( currentOptionsPos ), currentOptionsPos );
+                    playGame( listAdapter.getItem( currentOptionsPos ), currentOptionsPos );
                 } )
                 .show();
     }
@@ -339,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
         restoredFromSettings = false;
         if( requestCode == 0 ) {
             if( resultCode == RESULT_OK ) {
-                playGame( ( Mode ) listAdapter.getItem( 0 ), 0 );
+                playGame( listAdapter.getItem( 0 ), 0 );
             }
         } else if( requestCode == 0xffff ) {
             restoredFromSettings = true;
@@ -348,7 +351,7 @@ public class MainActivity extends AppCompatActivity {
             CTableDecoder decoder = new CTableDecoder( stream );
             try {
                 TagStringCompound cpd = decoder.readTagStringCompound();
-                Mode m = new Mode( cpd );
+                Mode m = new Mode( cpd, listAdapter.getItem( requestCode - 1 ) );
                 listAdapter.setItem( m, requestCode - 1 );
                 listAdapter.notifyDataSetChanged();
             } catch( IOException e ) {
@@ -418,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
         anim.setDuration( 300 );
         optionsBg.startAnimation( anim );
 
-        Mode m = ( Mode ) listAdapter.getItem( pos );
+        Mode m = listAdapter.getItem( pos );
 
         findViewById( R.id.options_remove ).setVisibility( m.isNative() ? View.GONE : View.VISIBLE );
         findViewById( R.id.options_edit ).setVisibility( m.isNative() ? View.GONE : View.VISIBLE );
@@ -427,13 +430,13 @@ public class MainActivity extends AppCompatActivity {
     public void onClearHistoryClick( View v ) {
         bottomSheet.setState( BottomSheetBehavior.STATE_HIDDEN );
         closeOptions( v );
-        Mode m = ( Mode ) listAdapter.getItem( currentOptionsPos );
+        Mode m = listAdapter.getItem( currentOptionsPos );
         m.resetStats();
         listAdapter.notifyDataSetChanged();
     }
 
     public void delete() {
-        Mode m = ( Mode ) listAdapter.getItem( currentOptionsPos );
+        Mode m = listAdapter.getItem( currentOptionsPos );
         listAdapter.removeItem( m );
         listAdapter.notifyDataSetChanged();
 
@@ -476,15 +479,25 @@ public class MainActivity extends AppCompatActivity {
     public void onEditClick( View v ) {
         bottomSheet.setState( BottomSheetBehavior.STATE_HIDDEN );
         closeOptions( v );
-        Mode m = ( Mode ) listAdapter.getItem( currentOptionsPos );
-        EditDialogController.show( R.string.edit_mode_edit, this, this.listAdapter, m.getLocalizedName(), m.getWidth(), m.getHeight(), m.getMines(), currentOptionsPos );
+        Mode m = listAdapter.getItem( currentOptionsPos );
+        new EditDialog(
+                this, EditDialog.EDIT,
+                m.getLocalizedName(),
+                m.getWidth(), m.getHeight(), m.getMines(),
+                currentOptionsPos, listAdapter
+        ).show();
     }
 
     public void onCopyClick( View v ) {
         bottomSheet.setState( BottomSheetBehavior.STATE_HIDDEN );
         closeOptions( v );
-        Mode m = ( Mode ) listAdapter.getItem( currentOptionsPos );
-        EditDialogController.show( R.string.edit_mode_copy, this, this.listAdapter, m.getLocalizedName(), m.getWidth(), m.getHeight(), m.getMines(), -1 );
+        Mode m = listAdapter.getItem( currentOptionsPos );
+        new EditDialog(
+                this, EditDialog.COPY,
+                m.getLocalizedName(),
+                m.getWidth(), m.getHeight(), m.getMines(),
+                -1, listAdapter
+        ).show();
     }
 
     public void onPlayClick( View v ) {
@@ -500,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onInfoClick( View v ) {
         closeOptions( v );
-        Mode m = ( Mode ) listAdapter.getItem( currentOptionsPos );
+        Mode m = listAdapter.getItem( currentOptionsPos );
 
         setTextViewText( R.id.info_title, m.getLocalizedName() );
         setTextViewText( R.id.info_dimensions, getString( R.string.mode_size_format, m.getWidth(), m.getHeight() ) );
@@ -541,6 +554,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onAddMode( View view ) {
-        EditDialogController.show( R.string.edit_mode_add, this, this.listAdapter, null, null, null, null, -1 );
+        new EditDialog(
+                this, EditDialog.ADD,
+                getString( R.string.txt_custom ),
+                9, 9, 10,
+                -1, listAdapter
+        ).show();
     }
 }
