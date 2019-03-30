@@ -3,20 +3,20 @@ package net.rgsw.minesweeper.game.hint;
 import net.rgsw.minesweeper.R;
 import net.rgsw.minesweeper.game.MinesweeperGame;
 
-public class GuessHint extends Hint {
+public class EndedGameHint extends Hint {
+    private boolean lost;
 
     @Override
     public boolean findHint( MinesweeperGame game ) {
-        return true;
-    }
-
-    @Override
-    public boolean isDone( MinesweeperGame game ) {
-        return true;
+        if( game.done() ) {
+            lost = !game.won();
+            return true;
+        }
+        return false;
     }
 
     @Override
     public int getMessageResource() {
-        return R.string.hint_guess;
+        return lost ? R.string.hint_lost : R.string.hint_won;
     }
 }

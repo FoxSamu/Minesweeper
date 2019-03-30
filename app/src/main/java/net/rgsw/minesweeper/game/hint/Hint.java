@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import net.rgsw.minesweeper.game.EMark;
 import net.rgsw.minesweeper.game.ICellInvalidator;
+import net.rgsw.minesweeper.game.Location;
 import net.rgsw.minesweeper.game.MinesweeperGame;
 
 import java.util.HashMap;
@@ -17,64 +18,64 @@ import java.util.HashSet;
  * game will show. They are ordered on priority, so hints with lower index are searched first.
  */
 public abstract class Hint {
-    private final HashSet<MinesweeperGame.Location> inferredFlags = new HashSet<>();
-    private final HashSet<MinesweeperGame.Location> inferredDigs = new HashSet<>();
-    private final HashSet<MinesweeperGame.Location> wrongFlags = new HashSet<>();
-    private final HashSet<MinesweeperGame.Location> usedNumbers = new HashSet<>();
-    private final HashMap<MinesweeperGame.Location, EMark> marks = new HashMap<>();
-    private MinesweeperGame.Location viewLocation;
+    private final HashSet<Location> inferredFlags = new HashSet<>();
+    private final HashSet<Location> inferredDigs = new HashSet<>();
+    private final HashSet<Location> wrongFlags = new HashSet<>();
+    private final HashSet<Location> usedNumbers = new HashSet<>();
+    private final HashMap<Location, EMark> marks = new HashMap<>();
+    private Location viewLocation;
 
     private boolean inUse = false;
 
     protected final void addInferredFlag( int x, int y ) {
-        inferredFlags.add( new MinesweeperGame.Location( x, y ) );
+        inferredFlags.add( new Location( x, y ) );
     }
 
     protected final void addInferredDig( int x, int y ) {
-        inferredDigs.add( new MinesweeperGame.Location( x, y ) );
+        inferredDigs.add( new Location( x, y ) );
     }
 
     protected final void addWrongFlag( int x, int y ) {
-        wrongFlags.add( new MinesweeperGame.Location( x, y ) );
+        wrongFlags.add( new Location( x, y ) );
     }
 
     protected final void addUsedNumber( int x, int y ) {
-        usedNumbers.add( new MinesweeperGame.Location( x, y ) );
+        usedNumbers.add( new Location( x, y ) );
     }
 
     protected final void setMark( int x, int y, EMark mark ) {
-        marks.put( new MinesweeperGame.Location( x, y ), mark );
+        marks.put( new Location( x, y ), mark );
     }
 
     public final boolean isInferredFlag( int x, int y ) {
-        return inferredFlags.contains( new MinesweeperGame.Location( x, y ) );
+        return inferredFlags.contains( new Location( x, y ) );
     }
 
     public final boolean isInferredDig( int x, int y ) {
-        return inferredDigs.contains( new MinesweeperGame.Location( x, y ) );
+        return inferredDigs.contains( new Location( x, y ) );
     }
 
     public final boolean isWrongFlag( int x, int y ) {
-        return wrongFlags.contains( new MinesweeperGame.Location( x, y ) );
+        return wrongFlags.contains( new Location( x, y ) );
     }
 
     public final boolean isUsedCell( int x, int y ) {
-        return usedNumbers.contains( new MinesweeperGame.Location( x, y ) );
+        return usedNumbers.contains( new Location( x, y ) );
     }
 
     public final EMark getMark( int x, int y ) {
-        return marks.get( new MinesweeperGame.Location( x, y ) );
+        return marks.get( new Location( x, y ) );
     }
 
     public final void setViewLocation( int x, int y ) {
-        this.viewLocation = new MinesweeperGame.Location( x, y );
+        this.viewLocation = new Location( x, y );
     }
 
     public final void removeViewLocation() {
         this.viewLocation = null;
     }
 
-    public final MinesweeperGame.Location getViewLocation() {
+    public final Location getViewLocation() {
         return viewLocation;
     }
 
@@ -87,11 +88,24 @@ public abstract class Hint {
     }
 
     public final void invalidate( ICellInvalidator invalidator ) {
-        for( MinesweeperGame.Location l : inferredFlags ) invalidator.invalidateCell( l.x, l.y );
-        for( MinesweeperGame.Location l : inferredDigs ) invalidator.invalidateCell( l.x, l.y );
-        for( MinesweeperGame.Location l : wrongFlags ) invalidator.invalidateCell( l.x, l.y );
-        for( MinesweeperGame.Location l : usedNumbers ) invalidator.invalidateCell( l.x, l.y );
-        for( MinesweeperGame.Location l : marks.keySet() ) invalidator.invalidateCell( l.x, l.y );
+        for( Location l : inferredFlags ) invalidator.invalidateCell( l.x, l.y );
+        for( Location l : inferredDigs ) invalidator.invalidateCell( l.x, l.y );
+        for( Location l : wrongFlags ) invalidator.invalidateCell( l.x, l.y );
+        for( Location l : usedNumbers ) invalidator.invalidateCell( l.x, l.y );
+        for( Location l : marks.keySet() ) invalidator.invalidateCell( l.x, l.y );
+    }
+
+    public boolean isDone( MinesweeperGame game ) {
+        for( Location l : inferredFlags ) {
+            if( !game.isFlagged( l.x, l.y ) ) return false;
+        }
+        for( Location l : inferredDigs ) {
+            if( !game.isRevealed( l.x, l.y ) ) return false;
+        }
+        for( Location l : wrongFlags ) {
+            if( game.isFlagged( l.x, l.y ) ) return false;
+        }
+        return true;
     }
 
     @CallSuper

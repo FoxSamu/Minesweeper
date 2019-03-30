@@ -176,4 +176,23 @@
     <string name="hint_random_flag">Dit vlaggetje is totaal willekeurig</string>
     <string name="menu_license">Licentie</string>
     <string name="ok">Ok</string>
+    <string name="hint_algorithm">Algoritme heeft dit geconcludeerd</string>
+    <string name="loading_hint">Hint laden...</string>
+    <string name="hint_not_started">Het spel is nog niet begonnen</string>
+    <string name="hint_lost">Het spel is al over</string>
+    <string name="hint_won">Het spel is al gewonnen</string>
+    <string name="about_version">Versie 1.0-indev</string>
+    <string name="about_license">Gelicentiëerd onder de apache-licentie, Versie 2.0 (de \"Licentie\"); deze software mag niet gebruikt worden tenzij dit in overeenstemming is met de Licentie. Een kopie van de licentie kan verkregen worden met de knop hieronder</string>
+    <string name="about_license_button">Volledige Licentie</string>
+    <string name="about_license_2">Tenzij de toepasselijke wetgeving dit vereist of schriftelijk is overeengekomen, wordt software die wordt verspreid onder de licentie gedistribueerd op een \"AS IS\" -basis, ZONDER ENIGE VORM VAN GARANTIES OF VOORWAARDEN, expliciet of impliciet. Zie de licentie voor de specifieke taal die van toepassing is op toestemmingen en beperkingen onder de licentie.</string>
+    <string name="about_developer">Ontwikkeld en ontworpen door O. Nankman</string>
+    <string name="about_signed">De originale app is gesigneerd. Wanneer de signering overtreden wordt (op wat voor manier dan ook), is de originele app aangepast, wat betekent dat de originele ontwikkelaar niet langer aansprakelijk gesteld mag worden voor welk probleem of welke bug dan ook. Neem in plaats daarvan contact op met de handelaar en/of ontwikkelaar van de aangepaste variant. Het is niet toegestaan, al zegt de licentie van wel, om deze app, of een aangepaste variant van deze app te verkopen, zonder toestemming van de originele ontwikkelaar.</string>
+    <string name="about_legal_information">Juridische informatie</string>
+    <string name="about_violation">Elke overtreding van een of meer van deze regels is een overtreding van de copyrightwet!!!</string>
+    <string name="about_rate">Beoordeel deze app</string>
+    <string name="about_developer_info">Information over de ontwikkelaar</string>
+    <string name="about_debug">Dit is een debugversie! Probeer a.u.b. de app te downloaden van de Google play store...</string>
+    <string name="about_distributor">Deze app is verspreid door en in eigendom van het Red Galaxy team.</string>
+    <string name="about_names">De namen \"Red Galaxy\", \"Red Galaxy Software\", zowel als de afkortingen \"Rg\" en \"RGSW\", verwijzen en behoren allemaal tot het Red Galaxy team, zowel in hoofdletters als kleine letters is (of deels in hoofdletters), en zowel zonder als met spaties.</string>
+    <string name="about_signature_violation">LET OP: DE SIGNERING VAN DEZE APP IS OVERTREDEN!!!\nDe originele ontwikkelaar en/of verspreider is niet aansprakelijk voor alle problemen of bugs die ontstaan of gebeuren.</string>
 </resources>

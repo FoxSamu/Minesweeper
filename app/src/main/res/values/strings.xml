@@ -230,6 +230,25 @@
     <string name="hint_random_flag">This flag is totally random</string>
     <string name="menu_license">License</string>
     <string name="ok">OK</string>
+    <string name="hint_algorithm">Solver algorithm concluded this</string>
+    <string name="loading_hint">Loading hint...</string>
+    <string name="hint_not_started">The game isn\'t started jet</string>
+    <string name="hint_lost">The game is already over</string>
+    <string name="hint_won">The game is already won</string>
+    <string name="about_version">Version 1.0-indev</string>
+    <string name="about_license">Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this software except in compliance with the License. You may obtain a copy of the License with the button below</string>
+    <string name="about_license_button">Full License</string>
+    <string name="about_license_2">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</string>
+    <string name="about_developer">Developed and designed by O. Nankman</string>
+    <string name="about_signed">The original app is signed. When the signature is violated (no matter how), the original app is modified, meaning that the original developer is no longer responsible for any problem or bug. Contact the distributor and/or developer of the modified variant instead. It is not allowed, even if the license says it is, to sell this app, or any modification of it, without any permission of the developer.</string>
+    <string name="about_legal_information">Legal information</string>
+    <string name="about_violation">Every infringement on any of these rules is a violation of the copyright law!!!</string>
+    <string name="about_rate">Rate this app</string>
+    <string name="about_developer_info">Developer information</string>
+    <string name="about_debug">This is a debug version! Consider downloading the app from the Google play store...</string>
+    <string name="about_distributor">This app is distributed by, and in ownership of the Red Galaxy team.</string>
+    <string name="about_names">The names \"Red Galaxy\", \"Red Galaxy Software\", as well as the abbreviations \"Rg\" and \"RGSW\", all refer and belong to the Red Galaxy team, whether in uppercase or lowercase (or partially uppercase), and with or without spaces.</string>
+    <string name="about_signature_violation">BEWARE: THIS APP HAS IT\'S SIGNATURE VIOLATED!!!\nThe original developer and/or distributor is not responsible for any problems or bugs that may arise or occur.</string>
 
     <!-- Example settings for Notifications -->
 

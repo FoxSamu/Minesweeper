@@ -8,6 +8,8 @@
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="false">
+        <activity android:name=".about.AboutActivity">
+        </activity>
         <activity android:name=".about.SplashActivity">
         </activity>
         <activity

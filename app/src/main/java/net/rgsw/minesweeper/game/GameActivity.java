@@ -467,7 +467,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         game.doInput( x, y, flagMode ? MinesweeperGame.Flag.FLAG : null );
         canvas.invalidate();
         updateGameState();
-        hideHint();
+        hideHint( false );
     }
 
     // Called when a cell is long-pressed
@@ -475,7 +475,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         game.doInput( x, y, flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG );
         canvas.invalidate();
         updateGameState();
-        hideHint();
+        hideHint( false );
     }
 
     @Override
@@ -571,11 +571,19 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
     }
 
+    /**
+     * Returns the value of the game cell size setting in pixels (setting is in dp)
+     * @return The game cell size in pixels
+     */
     public int getGameCellSizeInPX() {
         return toPx( Configuration.gameCellSize.getValue() );
     }
 
-    public void scrollCellIntoView( MinesweeperGame.Location loc ) {
+    /**
+     * Scrolls a specific cell into the visible area, with animation.
+     * @param loc The location to show
+     */
+    public void scrollCellIntoView( Location loc ) {
         int gcsipx = getGameCellSizeInPX();
         int x = loc.x * gcsipx + gcsipx / 2 + canvasOffsetX - gameScrollView.getWidth() / 2;
         int y = loc.y * gcsipx + gcsipx / 2 + canvasOffsetY - gameScrollView.getHeight() / 2;
@@ -598,6 +606,10 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         animator.start();
     }
 
+    /**
+     * Updates the hint card text
+     * @param txt The string resource
+     */
     public void setHintText( @StringRes int txt ) {
         hintText.setText( txt );
 
@@ -608,10 +620,12 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
     }
 
+    /**
+     * Shows the hint card with animation
+     */
     public void showHintCard() {
         if( !hintCardShown ) {
             hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
-            float h = hintCard.getMeasuredHeight();
             ValueAnimator animator = ValueAnimator.ofObject( new FloatEvaluator(), hintCard.getTranslationY(), 0 );
             animator.addUpdateListener( animation -> hintCard.setTranslationY( ( float ) animation.getAnimatedValue() ) );
             animator.setDuration( 200 );
@@ -621,6 +635,9 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
     }
 
+    /**
+     * Hides the hint card with animation.
+     */
     public void hideHintCard() {
         if( hintCardShown ) {
             hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
@@ -633,18 +650,26 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
     }
 
-    public void hideHint() {
-        hideHintCard();
-        game.hideHint();
+    /**
+     * Hides the currently shown hint if not done, or when forced
+     * @param brute If the hint should be forced to hide.
+     */
+    public void hideHint( boolean brute ) {
+        if( brute || game.isHintDone() ) {
+            hideHintCard();
+            game.hideHint();
+        }
     }
 
-
+    /**
+     * Infers a hint and shows that. When the hint needs to show a specific location, it will automatically scroll that
+     * location into view.
+     */
     public void hint() {
         game.inferHint();
-
         Hint hint = game.getShownHint();
 
-        MinesweeperGame.Location loc = hint.getViewLocation();
+        Location loc = hint.getViewLocation();
         if( loc != null ) {
             scrollCellIntoView( loc );
         }
@@ -653,10 +678,18 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         showHintCard();
     }
 
+    /**
+     * Registers the hints in the game. This is called in the {@link #onCreate} method.
+     */
     public void registerHints() {
+        game.addHint( -1, new NotJetStartedHint() );        // Most important hint
+        game.addHint( -1, new EndedGameHint() );
         game.addHint( -1, new TooManyFlagsHint() );
+        game.addHint( -1, new RandomFlagHint() );
         game.addHint( -1, new FlagNextToZeroHint() );
         game.addHint( -1, new StraightforwardNumberHint() );
         game.addHint( -1, new CompletedNumberHint() );
+        game.addHint( -1, new TankSolverHint( game, 8 ) );  // Least important hint
+        // Game will fall back on GuessHint automatically: No need for adding that to the game...
     }
 }

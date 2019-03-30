@@ -493,12 +493,16 @@ public class MinesweeperGame implements IGame {
                 return EMark.INVERSE;
             }
 
-            if( h.isInferredFlag( x, y ) ) {
+            if( h.isInferredFlag( x, y ) && !isFlagged( x, y ) ) {
                 return EMark.GREEN;
             }
 
-            if( h.isInferredDig( x, y ) ) {
+            if( h.isInferredDig( x, y ) && !isRevealed( x, y ) ) {
                 return EMark.BLUE;
+            }
+
+            if( h.isWrongFlag( x, y ) ) {
+                return EMark.RED;
             }
         }
         return null;
@@ -511,10 +515,6 @@ public class MinesweeperGame implements IGame {
             Hint h = shownHint;
             EMark mark = h.getMark( x, y );
             if( mark != null ) return mark;
-
-            if( h.isWrongFlag( x, y ) ) {
-                return EMark.RED;
-            }
         }
         return null;
     }
@@ -524,7 +524,7 @@ public class MinesweeperGame implements IGame {
         if( hasHint() ) {
             Hint h = shownHint;
 
-            if( h.isInferredFlag( x, y ) ) {
+            if( h.isInferredFlag( x, y ) && !isFlagged( x, y ) ) {
                 return true;
             }
         }
@@ -537,7 +537,7 @@ public class MinesweeperGame implements IGame {
         if( hasHint() ) {
             Hint h = shownHint;
 
-            return h.isInferredDig( x, y );
+            return h.isInferredDig( x, y ) && !isRevealed( x, y );
         }
         return false;
     }
@@ -776,6 +776,7 @@ public class MinesweeperGame implements IGame {
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
                 if( x1 == x && y1 == y ) continue; // Skip center tile
+                if( outOfRange( x1, y1 ) ) continue;
                 if( isRevealed( x1, y1 ) ) return true;
             }
         }
@@ -852,6 +853,18 @@ public class MinesweeperGame implements IGame {
             shownHint.reset();
             shownHint = null;
         }
+    }
+
+    /**
+     * Checks whether the player has completed the hint. This is when all inferred flags are flagged and when all
+     * inferred digs are dug. When this returns true, the hint can be auto-closed. Some hints have a custom
+     * implementation on checking if they're done.
+     * @return True when the hint is completed.
+     */
+    public boolean isHintDone() {
+        if( !hasHint() ) return true; // No hint so hint is done
+        Hint h = shownHint;
+        return h.isDone( this );
     }
 
     /**
@@ -991,28 +1004,6 @@ public class MinesweeperGame implements IGame {
      */
     public void setInvalidator( ICellInvalidator invalidator ) {
         this.invalidator = invalidator;
-    }
-
-    public static class Location {
-        public final int x;
-        public final int y;
-
-        public Location( int x, int y ) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public boolean equals( Object o ) {
-            if( o == this ) return true;
-            if( !( o instanceof Location ) ) return false;
-            Location l = ( Location ) o;
-            return l.x == x && l.y == y;
-        }
-
-        @Override
-        public int hashCode() {
-            return x << 16 + y;
-        }
     }
 
     public enum Flag {

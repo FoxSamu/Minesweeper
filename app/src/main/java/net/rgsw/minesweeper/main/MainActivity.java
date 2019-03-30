@@ -32,6 +32,7 @@ import net.rgsw.minesweeper.game.GameActivity;
 import net.rgsw.minesweeper.settings.Configuration;
 import net.rgsw.minesweeper.settings.SettingsActivity;
 import net.rgsw.minesweeper.tutorial.TutorialActivity;
+import net.rgsw.minesweeper.util.SignatureUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
 
+        SignatureUtil.checkAppSignature( this );
         if( savedInstanceState == null ) {
             // Show splash screen
             startActivity( new Intent( this, SplashActivity.class ) );
