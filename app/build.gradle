@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
+        sweepersigning {
+            keyAlias 'sweeperkey'
+            keyPassword 'Secretpassword'
+            storeFile file('/Users/Mac1/Documents/Keystore/net.rgsw.minesweeper.jks')
+            storePassword 'Secretpassword'
+        }
     }
     compileSdkVersion 28
     defaultConfig {
@@ -11,6 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.sweepersigning
     }
     buildTypes {
         release {
@@ -18,8 +25,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             debuggable false
             jniDebuggable false
-            versionNameSuffix 'v1.0'
             zipAlignEnabled true
+            signingConfig signingConfigs.sweepersigning
+            proguardFile '/Users/Mac1/AndroidStudioProjects/Minesweeper/app/proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.sweepersigning
+            proguardFile '/Users/Mac1/AndroidStudioProjects/Minesweeper/app/proguard-rules.pro'
+            versionNameSuffix '-debug'
         }
     }
     compileOptions {
@@ -27,6 +40,8 @@ android {
         targetCompatibility = '1.8'
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    productFlavors {
     }
 }
 
