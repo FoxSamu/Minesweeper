@@ -3,6 +3,8 @@ package net.rgsw.minesweeper.game;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import net.rgsw.ctable.tag.TagStringCompound;
+import net.rgsw.minesweeper.game.hint.GuessHint;
+import net.rgsw.minesweeper.game.hint.Hint;
 import net.rgsw.minesweeper.main.Mode;
 import net.rgsw.minesweeper.settings.Configuration;
 
@@ -11,6 +13,9 @@ import java.util.Random;
 import java.util.Stack;
 
 public class MinesweeperGame implements IGame {
+
+    private final ArrayList<Hint> hints = new ArrayList<>();
+    private final GuessHint guessHint = new GuessHint();
 
     private boolean ended;
     private boolean won;
@@ -29,6 +34,8 @@ public class MinesweeperGame implements IGame {
     private ICellInvalidator invalidator;
     private Integer tappedMineX;
     private Integer tappedMineY;
+
+    private Hint shownHint;
 
     private final Stack<Location> processingStack = new Stack<>();
 
@@ -403,12 +410,13 @@ public class MinesweeperGame implements IGame {
 
     /**
      * Counts the amount of mines adjacent to the specified cell. This computes the number that would be shown in the
-     * specified cell.
+     * specified cell when it is revealed. When this method returns zero, all cells around this cell could safely be
+     * opened.
      * @param x X coordinate of the cell
      * @param y Y coordinate of the cell
      * @return The amount of adjacent mines
      */
-    private int findAdjacentMines( int x, int y ) {
+    public int findAdjacentMines( int x, int y ) {
         int mines = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
@@ -422,13 +430,13 @@ public class MinesweeperGame implements IGame {
     }
 
     /**
-     * Counts the amount of flags adjacent to the specified cell. Used in handling number taps, to check if a number
-     * could be tapped.
+     * Counts the amount of flags adjacent to the specified cell. Used in handling number taps to check if a number
+     * could be tapped and in hints to infer flags or to indicate that a number has too many or too few flags around it.
      * @param x X coordinate of the cell
      * @param y Y coordinate of the cell
      * @return The amount of adjacent flags
      */
-    private int findAdjacentFlags( int x, int y ) {
+    public int findAdjacentFlags( int x, int y ) {
         int flags = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
@@ -442,12 +450,12 @@ public class MinesweeperGame implements IGame {
     }
 
     /**
-     * Checks whether the specified coordinate lies in the game board, i.e. if they point to a valid cell.
+     * Checks whether the specified coordinate lies outside the game board, i.e. if they point to an invalid cell.
      * @param x X coordinate
      * @param y Y coordinate
-     * @return True when the specified coords point to a valid cell.
+     * @return True when the specified coords point to an invalid cell.
      */
-    private boolean outOfRange( int x, int y ) {
+    public boolean outOfRange( int x, int y ) {
         return x >= width || y >= height || x < 0 || y < 0;
     }
 
@@ -478,13 +486,60 @@ public class MinesweeperGame implements IGame {
         if( Configuration.markTappedMine.getValue() && ended && !won && tappedMineX == x && tappedMineY == y ) {
             return EMark.RED;
         }
+        if( hasHint() ) {
+            Hint h = shownHint;
+
+            if( h.isUsedCell( x, y ) ) {
+                return EMark.INVERSE;
+            }
+
+            if( h.isInferredFlag( x, y ) ) {
+                return EMark.GREEN;
+            }
+
+            if( h.isInferredDig( x, y ) ) {
+                return EMark.BLUE;
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public EMark getBorderMark( int x, int y ) {
+        if( hasHint() ) {
+            Hint h = shownHint;
+            EMark mark = h.getMark( x, y );
+            if( mark != null ) return mark;
+
+            if( h.isWrongFlag( x, y ) ) {
+                return EMark.RED;
+            }
+        }
         return null;
     }
 
     @Override
     public boolean isInferredFlag( int x, int y ) {
+        if( hasHint() ) {
+            Hint h = shownHint;
+
+            if( h.isInferredFlag( x, y ) ) {
+                return true;
+            }
+        }
         if( !Configuration.showInferredFlags.getValue() ) return false;
         return inferFlag( x, y );
+    }
+
+    @Override
+    public boolean isInferredDig( int x, int y ) {
+        if( hasHint() ) {
+            Hint h = shownHint;
+
+            return h.isInferredDig( x, y );
+        }
+        return false;
     }
 
     @Override
@@ -634,7 +689,7 @@ public class MinesweeperGame implements IGame {
      * @param x X coordinate
      * @param y Y coordinate
      */
-    private int amountOfUnrevealedAdjacentTiles( int x, int y ) {
+    public int amountOfUnrevealedAdjacentTiles( int x, int y ) {
         int amount = 0;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
             for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
@@ -647,13 +702,13 @@ public class MinesweeperGame implements IGame {
     }
 
     /**
-     * Tries to infer a flag to the specified coordinates, by checking surrounding numbers if they could be completed
-     * by flagging their neighbors.
+     * Tries to infer a flag in the cell at specified coordinates, by checking surrounding numbers if they could be
+     * completed by flagging all of their adjacent cells.
      * @param x X coordinate
      * @param y Y coordinate
      * @return True if a flag could be inferred, false otherwise
      */
-    private boolean inferFlag( int x, int y ) {
+    public boolean inferFlag( int x, int y ) {
         if( isRevealed( x, y ) ) return false;
         if( isFlagged( x, y ) ) return false;
         for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
@@ -708,6 +763,127 @@ public class MinesweeperGame implements IGame {
             end( true ); // All mines are flagged
         }
     }
+
+    /**
+     * Checks whether the cell at specified coordinates is an unrevealed cell next to at least one revealed cell. This
+     * means that the specified cell is unrevealed but has at least some information when this method returns true.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return False in any case, unless it's unrevealed and has at least one revealed neighbor cell
+     */
+    public boolean hasTileInformation( int x, int y ) {
+        if( isRevealed( x, y ) ) return false;
+        for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
+            for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
+                if( x1 == x && y1 == y ) continue; // Skip center tile
+                if( isRevealed( x1, y1 ) ) return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the visual number in the cell at the specified coordinates, or -1 when the specified cell is not
+     * revealed.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return The visible number, which is 0 when the cell is empty and -1 when the cell is not revealed
+     */
+    public int getNumber( int x, int y ) {
+        if( !isRevealed( x, y ) ) return -1;
+        return adjacent[ index( x, y ) ];
+    }
+
+    /**
+     * Checks whether a hint can treat the specified cell as a revealed cell. This method returns true when the
+     * specified cell is either visually revealed, flagged or out of range, meaning that this cell is known (or it is
+     * no cell).
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return True when a hint may consider this cell revealed
+     */
+    public boolean canHintTreatAsRevealed( int x, int y ) {
+        return isRevealed( x, y ) || isFlagged( x, y );
+    }
+
+    /**
+     * Returns the amount of remaining mines around a specific cell. That is the number in the cell (the value returned
+     * by {@link #getNumber} and {@link #findAdjacentMines}) minus the amount of surrounding flags (the value returned
+     * by {@link #findAdjacentFlags}). When the value returned by this method is less than zero, the user has placed too
+     * many flags around this number. This method returns 9 when the specified cell is unrevealed, since that value is
+     * the first impossible return value of this method (a cell has only 8 neighbors). Hints use this to ignore flags
+     * around numbers to detect patterns.
+     * @param x X coordinate of the cell
+     * @param y Y coordinate of the cell
+     * @return The amount of mines in the surrounding cells minus the amount of flags in the surrounding cells, or 9
+     * when the specified cell is not revealed.
+     * @see #getNumber(int, int)
+     * @see #findAdjacentFlags(int, int)
+     */
+    public int getRemainingMinesAround( int x, int y ) {
+        if( !isRevealed( x, y ) ) return 9;
+        int num = getNumber( x, y );
+        int flags = findAdjacentFlags( x, y );
+        return num - flags;
+    }
+
+    /**
+     * Checks whether this game has a hint shown.
+     * @return True if a hint is shown.
+     */
+    public boolean hasHint() {
+        return shownHint != null;
+    }
+
+    /**
+     * Returns the hint that is currently shown
+     * @return The currently shown hint, or {@code null} if no such hint is shown
+     */
+    public Hint getShownHint() {
+        return shownHint;
+    }
+
+    /**
+     * Hides the currently shown hint
+     */
+    public void hideHint() {
+        if( hasHint() ) {
+            if( invalidator != null ) shownHint.invalidate( this.invalidator );
+            shownHint.reset();
+            shownHint = null;
+        }
+    }
+
+    /**
+     * Registers a hint to the hint list.
+     * @param index The index to register the hint at. When this is negative, it will count from the end
+     * @param hint  The hint to register, must not be null
+     */
+    public void addHint( int index, Hint hint ) {
+        if( hint == null ) throw new NullPointerException( "Hint must not be null!" );
+        if( index < 0 ) { hints.add( hints.size() + index + 1, hint ); } else hints.add( index, hint );
+    }
+
+    /**
+     * Tries to find a hint. If no hint could be found, the {@link GuessHint} is used.
+     */
+    public void inferHint() {
+        hideHint(); // Hide the previously used hint
+        for( Hint hint : hints ) {
+            if( hint.findHint( this ) ) {
+                hint.use();
+                this.shownHint = hint;
+                if( invalidator != null ) shownHint.invalidate( this.invalidator );
+                return;
+            } else {
+                hint.reset();
+            }
+        }
+        guessHint.use();
+        this.shownHint = guessHint;
+        if( invalidator != null ) shownHint.invalidate( this.invalidator );
+    }
+
 
     /**
      * Saves the game to a binary compound
@@ -831,6 +1007,11 @@ public class MinesweeperGame implements IGame {
             if( !( o instanceof Location ) ) return false;
             Location l = ( Location ) o;
             return l.x == x && l.y == y;
+        }
+
+        @Override
+        public int hashCode() {
+            return x << 16 + y;
         }
     }
 

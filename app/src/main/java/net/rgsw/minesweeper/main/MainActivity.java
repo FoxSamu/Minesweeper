@@ -275,6 +275,15 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if( id == R.id.menu_license ) {
+            AlertDialog.Builder builder = new AlertDialog.Builder( this );
+            builder.setTitle( R.string.menu_license );
+            builder.setPositiveButton( R.string.ok, null );
+            builder.setView( R.layout.license );
+            builder.show();
+            return true;
+        }
+
         return super.onOptionsItemSelected( item );
     }
 

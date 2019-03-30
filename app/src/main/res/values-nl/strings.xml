@@ -158,12 +158,12 @@
     <string name="setting_start_policy_advanced">Verzeker een opening als dit mogelijk is</string>
     <string name="face_icon">Gezichtje (nieuw spel)</string>
     <string name="pause_play">Pauze/Hervatten</string>
-    <string name="hint_inferred_flag">Dit cijfer ziet alleen nog %d bedekte hokjes</string>
+    <string name="hint_inferred_flag">Aantal onbekende buren is dit getal</string>
     <string name="hint_enough_flags">Dit cijfer is compleet</string>
     <string name="hint_too_many_flags">Dit cijfer heeft teveel vlaggetjes</string>
     <string name="hint_only_options_for_other">Alle mogelijkheden voor dit getal maken ander getal compleet</string>
     <string name="hint_flag_zero_conflict">Vlaggetje naast een leeg hokje</string>
-    <string name="hint_guess">Geen hint beschikbaar: je zal moeten gokken</string>
+    <string name="hint_guess">Geen hint beschikbaar: je zal waarschijnlijk moeten gokken</string>
     <string name="edit_error_size">Grootte niet tussen 5×5 en 100×100</string>
     <string name="edit_error_mines_low">Minimaal één mijn nodig</string>
     <string name="edit_error_mines_high">Te veel mijnen</string>
@@ -171,5 +171,9 @@
     <string name="mode_name_longstretched">Langwerpig</string>
     <string name="mode_name_tiny">Klein</string>
     <string name="splash_developer">Door RGSW</string>
-    <string name="splash_copyright">Copyright © 2019 RedGalaxySoftware</string>
+    <string name="splash_copyright">Copyright © 2019 RedGalaxySoftware\nAlle rechten voorbehouden</string>
+    <string name="menu_hint">Aanwijzing</string>
+    <string name="hint_random_flag">Dit vlaggetje is totaal willekeurig</string>
+    <string name="menu_license">Licentie</string>
+    <string name="ok">Ok</string>
 </resources>

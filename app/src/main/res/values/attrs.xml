@@ -40,6 +40,7 @@
         <attr name="flagIcon" format="reference"/>
         <attr name="softMarkIcon" format="reference"/>
         <attr name="inferredFlagIcon" format="reference"/>
+        <attr name="inferredDigIcon" format="reference"/>
         <attr name="cellSize" format="dimension"/>
         <attr name="iconSize" format="dimension"/>
         <attr name="cornerRounding" format="dimension"/>

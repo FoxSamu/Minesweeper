@@ -14,4 +14,7 @@
             app:showAsAction="ifRoom"
             android:id="@+id/menu_resume"
             android:title="@string/action_resume"/>
+    <item
+            android:title="@string/menu_license"
+            android:id="@+id/menu_license"/>
 </menu>

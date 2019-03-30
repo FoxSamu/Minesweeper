@@ -49,6 +49,16 @@ public interface IGame {
     }
 
     /**
+     * Returns whether a cell at a given location could be dug. Used in the canvas to render 'inferred dig' icons.
+     * @param x Location x, in cell coords
+     * @param y Location y, in cell coords
+     * @return True whether the 'inferred dig' icon should be rendered at this cell
+     */
+    default boolean isInferredDig( int x, int y ) {
+        return false;
+    }
+
+    /**
      * Returns whether there is a cell at a given location
      * @param x Location x, in cell coords
      * @param y Location y, in cell coords

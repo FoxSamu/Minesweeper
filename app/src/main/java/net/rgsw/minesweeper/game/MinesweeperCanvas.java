@@ -40,6 +40,7 @@ public class MinesweeperCanvas extends View {
     private Drawable sevenIcon;                             // Number 7
     private Drawable eightIcon;                             // Number 8
     private Drawable inferredFlagIcon;                      // Inferred flag icon
+    private Drawable inferredDigIcon;                       // Inferred dig icon
 
     private boolean gridEnabled;                            // Whether a grid should be rendered or not
 
@@ -125,6 +126,7 @@ public class MinesweeperCanvas extends View {
         sevenIcon = a.getDrawable( R.styleable.MinesweeperCanvas_sevenIcon );
         eightIcon = a.getDrawable( R.styleable.MinesweeperCanvas_eightIcon );
         inferredFlagIcon = a.getDrawable( R.styleable.MinesweeperCanvas_inferredFlagIcon );
+        inferredDigIcon = a.getDrawable( R.styleable.MinesweeperCanvas_inferredDigIcon );
 
         gridEnabled = a.getBoolean( R.styleable.MinesweeperCanvas_gridCheckerboard, true );
 
@@ -160,6 +162,7 @@ public class MinesweeperCanvas extends View {
         sevenIcon = Utils.orDefault( sevenIcon, getContext().getDrawable( R.drawable.ic_found_7 ) );
         eightIcon = Utils.orDefault( eightIcon, getContext().getDrawable( R.drawable.ic_found_8 ) );
         inferredFlagIcon = Utils.orDefault( inferredFlagIcon, getContext().getDrawable( R.drawable.ic_inferred_flag ) );
+        inferredDigIcon = Utils.orDefault( inferredDigIcon, getContext().getDrawable( R.drawable.ic_inferred_dig ) );
 
         if( isInEditMode() ) { // Use a basic game view in the editor, to show that there is a minesweeper canvas
             game = new EditModeGame();
@@ -420,6 +423,7 @@ public class MinesweeperCanvas extends View {
         EMark bgMark = game.getBackgroundMark( x, y );
         EMark mark = game.getBorderMark( x, y );
         boolean infFlag = game.isInferredFlag( x, y );
+        boolean infDig = game.isInferredDig( x, y );
 
         // Draw unrevealed background
         if( !state.revealed ) {
@@ -545,6 +549,8 @@ public class MinesweeperCanvas extends View {
             default:
                 if( infFlag ) {
                     drawIconInCell( canvas, inferredFlagIcon, rx, ry );
+                } else if( infDig ) {
+                    drawIconInCell( canvas, inferredDigIcon, rx, ry );
                 }
                 break;
         }
@@ -869,6 +875,21 @@ public class MinesweeperCanvas extends View {
 
     public Drawable getInferredFlagIcon() {
         return inferredFlagIcon;
+    }
+
+
+
+    public void setInferredDigIcon( Drawable drawable ) {
+        this.inferredDigIcon = drawable;
+        invalidate(); // Mark for re-render
+    }
+
+    public void setInferredDigIcon( @DrawableRes int drawableRes ) {
+        setInferredDigIcon( getContext().getDrawable( drawableRes ) );
+    }
+
+    public Drawable getInferredDigIcon() {
+        return inferredDigIcon;
     }
 
 

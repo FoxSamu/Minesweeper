@@ -1,19 +1,27 @@
 package net.rgsw.minesweeper.game;
 
 import android.animation.ArgbEvaluator;
+import android.animation.FloatEvaluator;
+import android.animation.PointFEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.*;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.rgsw.ctable.io.CTableDecoder;
@@ -22,8 +30,10 @@ import net.rgsw.ctable.io.CTableReader;
 import net.rgsw.ctable.io.CTableWriter;
 import net.rgsw.ctable.tag.TagStringCompound;
 import net.rgsw.minesweeper.R;
+import net.rgsw.minesweeper.game.hint.*;
 import net.rgsw.minesweeper.main.Mode;
 import net.rgsw.minesweeper.settings.Configuration;
+import net.rgsw.minesweeper.util.TwoDScrollView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -39,10 +49,17 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
     private Toolbar toolbar;
     private Handler handler;
     private FloatingActionButton modeButton;
+    private TwoDScrollView gameScrollView;
+    private CardView hintCard;
+    private boolean hintCardShown = false;
+    private TextView hintText;
+    private FrameLayout gameLayout;
     private MenuItem pauseIcon;
     private MenuItem faceIcon;
     private boolean flagMode;
     private boolean finalUpdate;
+    private int canvasOffsetX;
+    private int canvasOffsetY;
 
     private int chunkSize;
 
@@ -84,6 +101,17 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         timeView = findViewById( R.id.game_time );              // The time in the action bar
         minesView = findViewById( R.id.game_remaining_mines );  // The amount of flags left in the action bar
         modeButton = findViewById( R.id.mode_button );          // The mode switch FAB
+        gameScrollView = findViewById( R.id.game_sv );          // The game scroll view
+        hintCard = findViewById( R.id.hintCard );               // The hint card view
+        hintText = findViewById( R.id.hintText );               // The hint text view
+        gameLayout = findViewById( R.id.game_fl );           // Game layout
+
+        hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
+        hintCard.setTranslationY( -hintCard.getMeasuredHeight() * 1.5F );
+        hintCard.invalidate();
+
+        canvasOffsetX = gameLayout.getPaddingLeft();
+        canvasOffsetY = gameLayout.getPaddingTop();
 
         // Make the mode switch do the actual switching
         modeButton.setOnClickListener( this::modeButtonPress );
@@ -150,6 +178,9 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         CardView gameCard = findViewById( R.id.game_cardview );
         gameCard.setRadius( toPx( Configuration.gameCornerRadius.getValue() ) );
         gameCard.invalidate(); // Mark for re-render
+
+
+        registerHints();
 
         // Start updating game state
         updateGameState();
@@ -284,6 +315,11 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
             intent.putExtra( "undone", false ); // Set as done, we don't need to restore game state again
             setResult( RESULT_OK, intent );
             finish();
+            return true;
+        }
+
+        if( id == R.id.menu_hint ) { // Main menu, just finish the activity
+            hint();
             return true;
         }
 
@@ -431,6 +467,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         game.doInput( x, y, flagMode ? MinesweeperGame.Flag.FLAG : null );
         canvas.invalidate();
         updateGameState();
+        hideHint();
     }
 
     // Called when a cell is long-pressed
@@ -438,6 +475,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         game.doInput( x, y, flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG );
         canvas.invalidate();
         updateGameState();
+        hideHint();
     }
 
     @Override
@@ -531,5 +569,94 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         for( MinesweeperCanvas canvas : chunks ) {
             canvas.invalidate();
         }
+    }
+
+    public int getGameCellSizeInPX() {
+        return toPx( Configuration.gameCellSize.getValue() );
+    }
+
+    public void scrollCellIntoView( MinesweeperGame.Location loc ) {
+        int gcsipx = getGameCellSizeInPX();
+        int x = loc.x * gcsipx + gcsipx / 2 + canvasOffsetX - gameScrollView.getWidth() / 2;
+        int y = loc.y * gcsipx + gcsipx / 2 + canvasOffsetY - gameScrollView.getHeight() / 2;
+
+        int sx = gameScrollView.getScrollX();
+        int sy = gameScrollView.getScrollY();
+
+        int dx = sx - x;
+        int dy = sy - y;
+
+        double dist = Math.sqrt( dx * dx + dy * dy );
+
+        ValueAnimator animator = ValueAnimator.ofObject( new PointFEvaluator(), new PointF( sx, sy ), new PointF( x, y ) );
+        animator.setDuration( ( int ) ( dist * 0.3 ) );
+        animator.setInterpolator( new AccelerateDecelerateInterpolator() );
+        animator.addUpdateListener( animation -> {
+            PointF value = ( PointF ) animation.getAnimatedValue();
+            gameScrollView.scrollTo( ( int ) value.x, ( int ) value.y );
+        } );
+        animator.start();
+    }
+
+    public void setHintText( @StringRes int txt ) {
+        hintText.setText( txt );
+
+        hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
+
+        if( !hintCardShown ) {
+            hintCard.setTranslationY( -hintCard.getMeasuredHeight() * 1.5F );
+        }
+    }
+
+    public void showHintCard() {
+        if( !hintCardShown ) {
+            hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
+            float h = hintCard.getMeasuredHeight();
+            ValueAnimator animator = ValueAnimator.ofObject( new FloatEvaluator(), hintCard.getTranslationY(), 0 );
+            animator.addUpdateListener( animation -> hintCard.setTranslationY( ( float ) animation.getAnimatedValue() ) );
+            animator.setDuration( 200 );
+            animator.setInterpolator( new LinearOutSlowInInterpolator() );
+            animator.start();
+            hintCardShown = true;
+        }
+    }
+
+    public void hideHintCard() {
+        if( hintCardShown ) {
+            hintCard.measure( View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED );
+            ValueAnimator animator = ValueAnimator.ofObject( new FloatEvaluator(), hintCard.getTranslationY(), -hintCard.getMeasuredHeight() * 1.5F );
+            animator.addUpdateListener( animation -> hintCard.setTranslationY( ( float ) animation.getAnimatedValue() ) );
+            animator.setDuration( 200 );
+            animator.setInterpolator( new AccelerateInterpolator() );
+            animator.start();
+            hintCardShown = false;
+        }
+    }
+
+    public void hideHint() {
+        hideHintCard();
+        game.hideHint();
+    }
+
+
+    public void hint() {
+        game.inferHint();
+
+        Hint hint = game.getShownHint();
+
+        MinesweeperGame.Location loc = hint.getViewLocation();
+        if( loc != null ) {
+            scrollCellIntoView( loc );
+        }
+
+        setHintText( hint.getMessageResource() );
+        showHintCard();
+    }
+
+    public void registerHints() {
+        game.addHint( -1, new TooManyFlagsHint() );
+        game.addHint( -1, new FlagNextToZeroHint() );
+        game.addHint( -1, new StraightforwardNumberHint() );
+        game.addHint( -1, new CompletedNumberHint() );
     }
 }

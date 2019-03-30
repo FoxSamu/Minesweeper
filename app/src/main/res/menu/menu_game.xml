@@ -12,13 +12,17 @@
             android:id="@+id/menu_face"
             android:icon="@drawable/ic_face_alive"
             android:title="@string/face_icon"
-            app:showAsAction="ifRoom"/>
+            app:showAsAction="always"/>
     <item
             android:title="@string/pause_play"
-            app:showAsAction="ifRoom"
             android:icon="@drawable/ic_game_pause"
-            android:id="@+id/menu_pause"/>
+            android:id="@+id/menu_pause"
+            app:showAsAction="always"/>
     <item
             android:title="@string/discard"
             android:id="@+id/menu_discard"/>
+    <item
+            android:title="@string/menu_hint"
+            android:id="@+id/menu_hint"
+            />
 </menu>
