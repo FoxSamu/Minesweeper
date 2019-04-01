@@ -13,7 +13,7 @@ public class TooManyFlagsHint extends CellIteratingHint {
         if( !game.isRevealed( x, y ) ) return false;
         int num = game.getNumber( x, y );
         if( num > 0 && num < game.findAdjacentFlags( x, y ) ) {
-            setMark( x, y, EMark.RED );
+            setMark( x, y, EMark.YELLOW );
             this.num = num;
             this.x = x;
             this.y = y;

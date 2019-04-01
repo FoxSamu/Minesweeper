@@ -137,8 +137,8 @@
     <string name="setting_long_press">Lang indrukken</string>
     <string name="setting_long_press_desc">Wat er moet gebeuren bij lang indrukken in elke modus (\"Graafmodus - Vlagmodus\").</string>
     <string name="setting_vibration">Zoemen</string>
-    <string name="setting_vibration_desc">Zoem wanneer een mijn aangetikt wordt.</string>
-    <string name="setting_chording">Cijfer-tik inschakelen</string>
+    <string name="setting_vibration_desc">Zoem bij bepaalde gebeurtenissen.</string>
+    <string name="setting_chording">Cijfer-tik gedrag</string>
     <string name="setting_chording_desc">Wat moet er gebeuren met omliggende hokjes als een getal aangetikt wordt.</string>
     <string name="setting_keep_screen_on">Houd het scherm aan</string>
     <string name="setting_keep_screen_on_desc">Voorkom dat je apparaat automatisch het scherm vergrendelt tijdens een spel.</string>
@@ -149,8 +149,7 @@
     <string name="setting_tap_to_infer">Tik getal aan om vlaggetjes af te leiden</string>
     <string name="setting_tap_to_infer_desc">Wanneer dit ingeschakeld is kunnen cijfers met afgeleide vlaggen aangetikt worden om deze te plaatsen.</string>
     <string name="setting_mark_infer_numbers">Markeer getallen die die voltooid kunnen worden</string>
-    <string name="setting_mark_infer_numbers_desc">Geef aan van welke getallen alle buren een vlaggetje kunnen hebben.</string>
-    <string name="setting_hint_button">Toon knop voor aanwijzing</string>
+    <string name="setting_hint_button">Toon aanwijzingsoptie</string>
     <string name="setting_start_policy">Beginbeleid</string>
     <string name="setting_start_policy_desc">Bepaalt hoe mijnen geplaatst worden na een eerste tik.</string>
     <string name="setting_start_policy_no_ensuring">Totaal willekeurig, geen veilge start</string>
@@ -243,4 +242,14 @@
     <string name="setting_long_press_soft_mark">Vlag - Vraagteken</string>
     <string name="setting_long_press_inverse">Vlag - Graven</string>
     <string name="setting_long_press_all_soft_mark">Vraagteken - Vraagteken</string>
+    <string name="setting_inferred_digs">Toon veilig te graven hokjes</string>
+    <string name="setting_inferred_digs_desc">Toon hokjes die gegraven kunnen worden afgeleid uit omliggende cijfers.</string>
+    <string name="setting_hint_button_desc">Toon een optie voor aanwijzingen in het spelmenu.</string>
+    <string name="dialog_lose_better_luck">Volgende keer beter...</string>
+    <string name="dialog_win_congrats">Gefeliciteerd!</string>
+    <string name="confirm_new_game">Weet je zeker dat je opnieuw wil beginnen?</string>
+    <string name="confirm_yes">Ja</string>
+    <string name="confirm_no">Nee</string>
+    <string name="confirm_discard">Weet je zeker dat je dit spel wil weggooien?</string>
+    <string name="menu_about">Over</string>
 </resources>

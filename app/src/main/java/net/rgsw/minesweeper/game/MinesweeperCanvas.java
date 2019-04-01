@@ -79,6 +79,8 @@ public class MinesweeperCanvas extends View {
 
     private static final int DP2 = Math.round( 2 * ( Resources.getSystem().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT ) );
 
+    private boolean longPressing;
+
 
 
 
@@ -279,19 +281,7 @@ public class MinesweeperCanvas extends View {
             lastTouchDownXY[ 0 ] = event.getX();
             lastTouchDownXY[ 1 ] = event.getY();
 
-            float x = lastTouchDownXY[ 0 ]; // Use the coordinates saved in 'onTouchEvent'
-            float y = lastTouchDownXY[ 1 ];
-
-            x -= getPaddingTop();
-            y -= getPaddingLeft();
-
-            x /= cellSize;
-            y /= cellSize;
-
-            int ix = ( int ) x + getChunkX();
-            int iy = ( int ) y + getChunkY();
-
-            System.out.println( "Touch at " + ix + ", " + iy );
+            longPressing = false;
         }
 
         return super.onTouchEvent( event );
@@ -299,6 +289,8 @@ public class MinesweeperCanvas extends View {
 
     @Override // Handle clicking to activate cell clicking
     public boolean performClick() {
+
+        if( longPressing ) return super.performClick();
 
         float x = lastTouchDownXY[ 0 ]; // Use the coordinates saved in 'onTouchEvent'
         float y = lastTouchDownXY[ 1 ];
@@ -312,8 +304,6 @@ public class MinesweeperCanvas extends View {
         int ix = ( int ) x + getChunkX();
         int iy = ( int ) y + getChunkY();
 
-        System.out.println( "Click at " + ix + ", " + iy );
-
         if( cellClickListener != null && isInChunk( ix, iy ) ) {
             cellClickListener.onCellClick( this, ix, iy );
         }
@@ -323,7 +313,7 @@ public class MinesweeperCanvas extends View {
 
     @Override // Handle long pressing to activate long cell pressing
     public boolean performLongClick( float fx, float fy ) {
-
+        longPressing = true;
         float x = fx - getPaddingTop();
         float y = fy - getPaddingLeft();
 
@@ -332,8 +322,6 @@ public class MinesweeperCanvas extends View {
 
         int ix = ( int ) x + getChunkX();
         int iy = ( int ) y + getChunkY();
-
-        System.out.println( "Long click at " + ix + ", " + iy );
 
         if( cellLongClickListener != null && isInChunk( ix, iy ) ) {
             cellLongClickListener.onCellLongClick( this, ix, iy );

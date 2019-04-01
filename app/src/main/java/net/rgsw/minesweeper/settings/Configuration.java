@@ -26,9 +26,9 @@ public class Configuration {
     public static final Setting<Boolean> keepScreenOn = new Setting<>( false, false );
     public static final Setting<Boolean> disableFlagOverflowAroundNums = new Setting<>( false, false );
     public static final Setting<Boolean> disableFlagOverflowTotal = new Setting<>( false, true );
-    public static final Setting<Boolean> showHintOption = new Setting<>( false, true );
 
     // Hints
+    public static final Setting<Boolean> showHintOption = new Setting<>( false, true );
     public static final Setting<Boolean> showInferredFlags = new Setting<>( false, false );
     public static final Setting<Boolean> showInferredDigs = new Setting<>( false, false );
     public static final Setting<Boolean> markTooManyFlags = new Setting<>( false, false );
@@ -70,9 +70,23 @@ public class Configuration {
                 // Behavior & Controls
                 .putInt( "modeButtonPos", modeButtonPos.getValue().ordinal() )
                 .putBoolean( "markTappedMine", markTappedMine.getValue() )
+                .putInt( "numberTapBehavior", numberTapBehavior.getValue().ordinal() )
+                .putInt( "longPressBehavior", longPressBehavior.getValue().ordinal() )
+                .putInt( "winCondition", winCondition.getValue().ordinal() )
+                .putInt( "startingPolicy", startingPolicy.getValue().ordinal() )
+                .putInt( "endDialogBehavior", endDialogBehavior.getValue().ordinal() )
+                .putBoolean( "vibration", vibration.getValue() )
+                .putBoolean( "keepScreenOn", keepScreenOn.getValue() )
+                .putBoolean( "disableFlagOverflowAroundNums", disableFlagOverflowAroundNums.getValue() )
+                .putBoolean( "disableFlagOverflowTotal", disableFlagOverflowTotal.getValue() )
 
                 // Hints
+                .putBoolean( "showHintOption", showHintOption.getValue() )
                 .putBoolean( "showInferredFlags", showInferredFlags.getValue() )
+                .putBoolean( "showInferredDigs", showInferredDigs.getValue() )
+                .putBoolean( "markTooManyFlags", markTooManyFlags.getValue() )
+                .putBoolean( "markCompletableNumbers", markCompletableNumbers.getValue() )
+                .putBoolean( "markCompletedNumbers", markCompletedNumbers.getValue() )
 
                 // Advanced
                 .putInt( "gameChunkSize", gameChunkSize.getValue() )
@@ -90,11 +104,25 @@ public class Configuration {
         checkerboardGrid.setValue( prefs.getBoolean( "checkerboardGrid", true ) );
 
         // Behavior & Controls
-        modeButtonPos.setValue( EModeButtonPos.values()[ prefs.getInt( "modeButtonPos", 2 ) ] );
+        modeButtonPos.setValue( EModeButtonPos.values()[ prefs.getInt( "modeButtonPos", EModeButtonPos.RIGHT.ordinal() ) ] );
         markTappedMine.setValue( prefs.getBoolean( "markTappedMine", true ) );
+        numberTapBehavior.setValue( ENumberTapBehavior.values()[ prefs.getInt( "numberTapBehavior", ENumberTapBehavior.REVEAL.ordinal() ) ] );
+        longPressBehavior.setValue( ELongPressBehavior.values()[ prefs.getInt( "longPressBehavior", ELongPressBehavior.FLAG_DIG.ordinal() ) ] );
+        winCondition.setValue( EWinPolicy.values()[ prefs.getInt( "winCondition", EWinPolicy.FLAG_OR_REVEALED.ordinal() ) ] );
+        startingPolicy.setValue( EStartingPolicy.values()[ prefs.getInt( "startingPolicy", EStartingPolicy.FULL_ENSURANCE.ordinal() ) ] );
+        endDialogBehavior.setValue( EShowDialogOnEndBehavior.values()[ prefs.getInt( "endDialogBehavior", EShowDialogOnEndBehavior.ALWAYS.ordinal() ) ] );
+        vibration.setValue( prefs.getBoolean( "vibration", false ) );
+        keepScreenOn.setValue( prefs.getBoolean( "keepScreenOn", false ) );
+        disableFlagOverflowAroundNums.setValue( prefs.getBoolean( "disableFlagOverflowAroundNums", false ) );
+        disableFlagOverflowTotal.setValue( prefs.getBoolean( "disableFlagOverflowTotal", true ) );
 
         // Hints
+        showHintOption.setValue( prefs.getBoolean( "showHintOption", true ) );
         showInferredFlags.setValue( prefs.getBoolean( "showInferredFlags", false ) );
+        showInferredDigs.setValue( prefs.getBoolean( "showInferredDigs", false ) );
+        markTooManyFlags.setValue( prefs.getBoolean( "markTooManyFlags", false ) );
+        markCompletableNumbers.setValue( prefs.getBoolean( "markCompletableNumbers", false ) );
+        markCompletedNumbers.setValue( prefs.getBoolean( "markCompletedNumbers", false ) );
 
         // Advanced
         gameChunkSize.setValue( prefs.getInt( "gameChunkSize", 4 ) );

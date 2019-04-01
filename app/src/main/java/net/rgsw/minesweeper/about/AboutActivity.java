@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import net.rgsw.minesweeper.BuildConfig;
 import net.rgsw.minesweeper.R;
+import net.rgsw.minesweeper.settings.Configuration;
 import net.rgsw.minesweeper.util.SignatureUtil;
 
 public class AboutActivity extends AppCompatActivity {
@@ -16,6 +17,7 @@ public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
+        setTheme( Configuration.useDarkTheme.getValue() ? R.style.AppTheme_Dark_NoActionBar : R.style.AppTheme_NoActionBar );
         setContentView( R.layout.about_view );
 
         Toolbar t = findViewById( R.id.toolbar );

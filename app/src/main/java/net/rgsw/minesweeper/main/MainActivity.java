@@ -27,6 +27,7 @@ import net.rgsw.ctable.tag.TagInteger;
 import net.rgsw.ctable.tag.TagList;
 import net.rgsw.ctable.tag.TagStringCompound;
 import net.rgsw.minesweeper.R;
+import net.rgsw.minesweeper.about.AboutActivity;
 import net.rgsw.minesweeper.about.SplashActivity;
 import net.rgsw.minesweeper.game.GameActivity;
 import net.rgsw.minesweeper.settings.Configuration;
@@ -276,12 +277,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-        if( id == R.id.menu_license ) {
-            AlertDialog.Builder builder = new AlertDialog.Builder( this );
-            builder.setTitle( R.string.menu_license );
-            builder.setPositiveButton( R.string.ok, null );
-            builder.setView( R.layout.license );
-            builder.show();
+        if( id == R.id.menu_about ) {
+            Intent intent = new Intent( this, AboutActivity.class );
+            startActivity( intent );
             return true;
         }
 

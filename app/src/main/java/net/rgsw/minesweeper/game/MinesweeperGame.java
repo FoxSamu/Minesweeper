@@ -3,10 +3,14 @@ package net.rgsw.minesweeper.game;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import net.rgsw.ctable.tag.TagStringCompound;
+import net.rgsw.minesweeper.BuildConfig;
 import net.rgsw.minesweeper.game.hint.GuessHint;
 import net.rgsw.minesweeper.game.hint.Hint;
 import net.rgsw.minesweeper.main.Mode;
 import net.rgsw.minesweeper.settings.Configuration;
+import net.rgsw.minesweeper.settings.ENumberTapBehavior;
+import net.rgsw.minesweeper.settings.EStartingPolicy;
+import net.rgsw.minesweeper.settings.EWinPolicy;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,6 +38,7 @@ public class MinesweeperGame implements IGame {
     private ICellInvalidator invalidator;
     private Integer tappedMineX;
     private Integer tappedMineY;
+    private IEffects effects;
 
     private Hint shownHint;
 
@@ -60,6 +65,26 @@ public class MinesweeperGame implements IGame {
 
     private void invalidateArea( int x1, int y1, int x2, int y2 ) {
         if( invalidator != null ) invalidator.invalidateArea( x1, y1, x2, y2 );
+    }
+
+    private boolean liveHints() {
+        boolean useHints = false;
+        useHints |= Configuration.showInferredFlags.getValue();
+        useHints |= Configuration.showInferredDigs.getValue();
+        useHints |= Configuration.markTooManyFlags.getValue();
+        useHints |= Configuration.markCompletedNumbers.getValue();
+        useHints |= Configuration.markCompletableNumbers.getValue();
+        return useHints;
+    }
+
+    private void invalidateDigFlag( int x, int y ) {
+        if( liveHints() ) {
+            // Update surrounding area to invalidate inferred flag updates
+            invalidateArea( x - 1, y - 1, x + 1, y + 1 );
+        } else {
+            // No inferred flagging, save performance and invalidate only this cell
+            invalidate( x, y );
+        }
     }
 
     /**
@@ -97,8 +122,10 @@ public class MinesweeperGame implements IGame {
         if( paused ) return;
         // Compute no-mine radius... Try to retain a 3x3 square of no mines, but fallback on 1x1 if not enough empty
         // space for that.
+        EStartingPolicy policy = Configuration.startingPolicy.getValue();
         int range = 2;
-        if( width * height - 1 - amountMines < 9 ) range = 1;
+        if( width * height - 1 - amountMines < 9 || policy == EStartingPolicy.BASIC_ENSURANCE ) range = 1;
+        if( policy == EStartingPolicy.NO_ENSURANCE ) range = 0;
 
 
         // Find possible mine locations
@@ -130,6 +157,18 @@ public class MinesweeperGame implements IGame {
         }
         amountMines = allMines;
 
+
+        startTime = System.currentTimeMillis();
+
+        if( BuildConfig.VERSION_NAME.startsWith( "aprilfools" ) ) {
+            for( int i = 0; i < mines.length; i++ ) {
+                mines[ i ] = true;
+            }
+
+            end( false );
+            return;
+        }
+
         // Compute adjacent-mines numbers
         for( int x1 = 0; x1 < width; x1++ ) {
             for( int y1 = 0; y1 < height; y1++ ) {
@@ -137,8 +176,6 @@ public class MinesweeperGame implements IGame {
                 adjacent[ i ] = findAdjacentMines( x1, y1 );
             }
         }
-
-        startTime = System.currentTimeMillis();
 
         // Push something processable to the stack
         processingStack.push( new Location( x, y ) );
@@ -294,6 +331,31 @@ public class MinesweeperGame implements IGame {
         }
     }
 
+    public boolean canPlaceFlagAt( int x, int y ) {
+        boolean preventNums = Configuration.disableFlagOverflowAroundNums.getValue();
+        boolean preventTotal = Configuration.disableFlagOverflowTotal.getValue();
+
+        if( !preventNums && !preventTotal ) return true;
+        if( preventNums ) {
+            System.out.println( "Preventing numbers" );
+            for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
+                for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
+                    if( x1 == x && y1 == y ) continue; // Skip center tile
+                    if( outOfRange( x1, y1 ) ) continue; // Skip out-of-range tiles
+                    if( !isRevealed( x1, y1 ) ) continue; // Skip revealed tiles
+                    int adj = getNumber( x1, y1 );
+                    int flags = findAdjacentFlags( x1, y1 );
+                    if( flags >= adj ) return false;
+                }
+            }
+        }
+        if( preventTotal ) {
+            System.out.println( "Preventing total" );
+            return amountFlags < amountMines;
+        }
+        return true;
+    }
+
     /**
      * Places a flag on the specified cell, or removes it when already flagged
      * @param x X coordinate of the cell
@@ -304,7 +366,7 @@ public class MinesweeperGame implements IGame {
 
         Flag f = flags[ i ];
         if( f == null || f == Flag.SOFT_MARK ) {
-            if( amountFlags < amountMines ) {
+            if( canPlaceFlagAt( x, y ) ) {
                 flags[ i ] = Flag.FLAG;
                 amountFlags++;
             }
@@ -313,7 +375,7 @@ public class MinesweeperGame implements IGame {
             amountFlags--;
         }
 
-        invalidate( x, y );
+        invalidateDigFlag( x, y );
     }
 
     /**
@@ -350,6 +412,11 @@ public class MinesweeperGame implements IGame {
 
         if( !initialized ) {
             startAt( x, y );
+            if( effects != null ) {
+                if( ended ) {
+                    if( won ) { effects.fxWin(); } else effects.fxExplode();
+                } else { effects.fxDig(); }
+            }
             initialized = true;
             return;
         }
@@ -357,22 +424,81 @@ public class MinesweeperGame implements IGame {
         if( isRevealed( x, y ) ) {
             int adj = adjacent[ i ];
             if( adj == 0 ) return;
-            int flags = findAdjacentFlags( x, y );
-            if( flags >= adj ) {
-                revealOrLoseAdjacent( x, y );
+
+            ENumberTapBehavior behavior = Configuration.numberTapBehavior.getValue();
+
+            boolean dug = false;
+            if( behavior == ENumberTapBehavior.REVEAL || behavior == ENumberTapBehavior.BOTH ) {
+                int flags = findAdjacentFlags( x, y );
+                if( flags >= adj ) {
+                    revealOrLoseAdjacent( x, y );
+                    dug = true;
+                }
+            }
+            if( behavior == ENumberTapBehavior.PLACE_FLAGS || behavior == ENumberTapBehavior.BOTH ) {
+                int surrounding = amountOfUnrevealedAdjacentTiles( x, y );
+                if( surrounding <= adj ) {
+                    placeFlagsAround( x, y );
+                }
+            }
+
+            process();
+            checkWin();
+            if( effects != null ) {
+                if( ended ) {
+                    if( won ) { effects.fxWin(); } else effects.fxExplode();
+                } else {
+                    effects.fxNumber( dug );
+                }
             }
         } else {
             if( flag == null ) {
                 revealOrLose( x, y );
+                process();
+                checkWin();
+                if( effects != null ) {
+                    if( ended ) {
+                        if( won ) { effects.fxWin(); } else effects.fxExplode();
+                    } else {
+                        effects.fxDig();
+                    }
+                }
             } else if( flag == Flag.FLAG ) {
                 doFlag( x, y );
+                checkWin();
+                if( effects != null ) {
+                    if( ended ) { effects.fxWin(); } else effects.fxFlag();
+                }
             } else {
                 doSoftMark( x, y );
+                checkWin();
+                if( effects != null ) {
+                    if( ended ) { effects.fxWin(); } else effects.fxSoftMark();
+                }
             }
         }
 
-        process();
-        checkWin();
+    }
+
+    public void placeFlagsAround( int x, int y ) {
+        for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
+            for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
+                if( x1 == x && y1 == y ) continue; // Skip center tile
+                if( outOfRange( x1, y1 ) ) continue; // Skip out-of-range tiles
+                if( isRevealed( x1, y1 ) ) continue; // Skip revealed tiles
+                setFlagged( x1, y1, true );
+            }
+        }
+    }
+
+    public void setFlagged( int x, int y, boolean flag ) {
+        boolean old = flags[ index( x, y ) ] == Flag.FLAG;
+        flags[ index( x, y ) ] = flag ? Flag.FLAG : null;
+        if( old != flag ) {
+            amountFlags += flag ? 1 : -1;
+        }
+
+        invalidateDigFlag( x, y );
     }
 
     /**
@@ -384,13 +510,7 @@ public class MinesweeperGame implements IGame {
     public boolean tryReveal( int x, int y ) {
         if( isMine( x, y ) ) return false;
         revealed[ index( x, y ) ] = true;
-        if( Configuration.showInferredFlags.getValue() ) {
-            // Update surrounding area to invalidate inferred flag updates
-            invalidateArea( x - 1, y - 1, x + 1, y + 1 );
-        } else {
-            // No inferred flagging, save performance and invalidate only this cell
-            invalidate( x, y );
-        }
+        invalidateDigFlag( x, y );
         return true;
     }
 
@@ -483,8 +603,10 @@ public class MinesweeperGame implements IGame {
     @Nullable
     @Override
     public EMark getBackgroundMark( int x, int y ) {
-        if( Configuration.markTappedMine.getValue() && ended && !won && tappedMineX == x && tappedMineY == y ) {
-            return EMark.RED;
+        if( tappedMineX != null && tappedMineY != null ) {
+            if( Configuration.markTappedMine.getValue() && ended && !won && tappedMineX == x && tappedMineY == y ) {
+                return EMark.RED;
+            }
         }
         if( hasHint() ) {
             Hint h = shownHint;
@@ -503,6 +625,29 @@ public class MinesweeperGame implements IGame {
 
             if( h.isWrongFlag( x, y ) ) {
                 return EMark.RED;
+            }
+        }
+        if( Configuration.markTooManyFlags.getValue() ) {
+            if( isRevealed( x, y ) ) {
+                int num = getNumber( x, y );
+                int flags = findAdjacentFlags( x, y );
+                if( flags > num ) return EMark.YELLOW;
+            }
+        }
+        if( Configuration.markCompletableNumbers.getValue() ) {
+            if( isRevealed( x, y ) ) {
+                int num = getNumber( x, y );
+                int flags = findAdjacentFlags( x, y );
+                int unrev = amountOfUnrevealedAdjacentTiles( x, y );
+                if( unrev == num && flags < num ) return EMark.BLUE;
+            }
+        }
+        if( Configuration.markCompletedNumbers.getValue() ) {
+            if( isRevealed( x, y ) ) {
+                int num = getNumber( x, y );
+                int flags = findAdjacentFlags( x, y );
+                int unrev = amountOfUnrevealedAdjacentTiles( x, y );
+                if( flags == num && unrev > num ) return EMark.GREEN;
             }
         }
         return null;
@@ -539,7 +684,8 @@ public class MinesweeperGame implements IGame {
 
             return h.isInferredDig( x, y ) && !isRevealed( x, y );
         }
-        return false;
+        if( !Configuration.showInferredDigs.getValue() ) return false;
+        return inferDig( x, y );
     }
 
     @Override
@@ -729,38 +875,67 @@ public class MinesweeperGame implements IGame {
         return false;
     }
 
+    public boolean inferDig( int x, int y ) {
+        if( isRevealed( x, y ) ) return false;
+        if( isFlagged( x, y ) ) return false;
+        for( int x1 = x - 1; x1 <= x + 1; x1++ ) {
+            for( int y1 = y - 1; y1 <= y + 1; y1++ ) {
+                if( x1 == x && y1 == y ) continue; // Skip center tile
+                if( outOfRange( x1, y1 ) ) continue; // Skip out-of-range tiles
+                if( !isRevealed( x1, y1 ) ) continue; // Skip unrevealed tiles
+
+                int adj = adjacent[ index( x1, y1 ) ];
+
+                int flags = findAdjacentFlags( x1, y1 );
+
+                if( flags >= adj ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Ends the game when won according to the win policy setting.
      */
     public void checkWin() {
         boolean allComplete;
 
-        allComplete = true;
-        for( int i = 0; i < mines.length; i++ ) {
-            if( !mines[ i ] && !revealed[ i ] ) {
-                allComplete = false;
-                break;
-            }
-        }
-        if( allComplete ) {
-            end( true ); // All not-mines are revealed
-            return;
-        }
+        EWinPolicy policy = Configuration.winCondition.getValue();
 
-        allComplete = true;
-        for( int x = 0; x < width; x++ ) {
-            for( int y = 0; y < height; y++ ) {
-                int i = index( x, y );
-
-                boolean flag = flags[ i ] == Flag.FLAG;
-                if( mines[ i ] != flag ) {
+        if( policy != EWinPolicy.ALL_FLAG ) {
+            allComplete = true;
+            for( int i = 0; i < mines.length; i++ ) {
+                if( !mines[ i ] && !revealed[ i ] ) {
                     allComplete = false;
                     break;
                 }
             }
+            if( allComplete ) {
+                end( true ); // All not-mines are revealed
+                return;
+            }
         }
-        if( allComplete ) {
-            end( true ); // All mines are flagged
+
+        if( policy != EWinPolicy.ALL_REVEALED ) {
+            allComplete = true;
+            for( int x = 0; x < width; x++ ) {
+                for( int y = 0; y < height; y++ ) {
+                    int i = index( x, y );
+
+                    boolean flag = flags[ i ] == Flag.FLAG;
+                    if( policy == EWinPolicy.ALL_INFERRED ) flag |= inferFlag( x, y );
+                    if( mines[ i ] != flag ) {
+                        allComplete = false;
+                        break;
+                    }
+                }
+            }
+
+            if( allComplete ) {
+                end( true ); // All mines are flagged
+            }
         }
     }
 
@@ -990,8 +1165,8 @@ public class MinesweeperGame implements IGame {
      */
     public double getRevealedRelative() {
         int rev = 0;
-        for( int i = 0; i < revealed.length; i++ ) {
-            if( revealed[ i ] ) {
+        for( boolean bool : revealed ) {
+            if( bool ) {
                 rev++;
             }
         }
@@ -1004,6 +1179,10 @@ public class MinesweeperGame implements IGame {
      */
     public void setInvalidator( ICellInvalidator invalidator ) {
         this.invalidator = invalidator;
+    }
+
+    public void setEffects( IEffects effects ) {
+        this.effects = effects;
     }
 
     public enum Flag {

@@ -13,4 +13,27 @@ public enum EWinPolicy {
     EWinPolicy( int stringRes ) {
         this.stringRes = stringRes;
     }
+
+    public static class Values implements ISettingsEnum<EWinPolicy> {
+
+        @Override
+        public int getDisplayNameRes( int index ) {
+            return getValue( index ).stringRes;
+        }
+
+        @Override
+        public EWinPolicy getValue( int index ) {
+            return EWinPolicy.values()[ index ];
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public int getIndex( EWinPolicy value ) {
+            return value.ordinal();
+        }
+    }
 }

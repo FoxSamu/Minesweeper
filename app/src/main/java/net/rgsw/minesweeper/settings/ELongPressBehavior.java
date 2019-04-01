@@ -13,4 +13,27 @@ public enum ELongPressBehavior {
     ELongPressBehavior( int stringRes ) {
         this.stringRes = stringRes;
     }
+
+    public static class Values implements ISettingsEnum<ELongPressBehavior> {
+
+        @Override
+        public int getDisplayNameRes( int index ) {
+            return getValue( index ).stringRes;
+        }
+
+        @Override
+        public ELongPressBehavior getValue( int index ) {
+            return ELongPressBehavior.values()[ index ];
+        }
+
+        @Override
+        public int getCount() {
+            return 4;
+        }
+
+        @Override
+        public int getIndex( ELongPressBehavior value ) {
+            return value.ordinal();
+        }
+    }
 }

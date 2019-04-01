@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import net.rgsw.minesweeper.R;
 import net.rgsw.minesweeper.game.ECellState;
+import net.rgsw.minesweeper.settings.Configuration;
 
 public class TutorialActivity extends AppCompatActivity {
 
@@ -100,6 +101,7 @@ public class TutorialActivity extends AppCompatActivity {
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
+        setTheme( Configuration.useDarkTheme.getValue() ? R.style.AppTheme_Dark : R.style.AppTheme );
         setContentView( R.layout.activity_tutorial );
 
         // Create the adapter that will return a fragment for each of the three
@@ -185,7 +187,7 @@ public class TutorialActivity extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+    public static class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter( FragmentManager fm ) {
             super( fm );

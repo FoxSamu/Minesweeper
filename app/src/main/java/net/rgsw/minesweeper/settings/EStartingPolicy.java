@@ -12,4 +12,27 @@ public enum EStartingPolicy {
     EStartingPolicy( int stringRes ) {
         this.stringRes = stringRes;
     }
+
+    public static class Values implements ISettingsEnum<EStartingPolicy> {
+
+        @Override
+        public int getDisplayNameRes( int index ) {
+            return getValue( index ).stringRes;
+        }
+
+        @Override
+        public EStartingPolicy getValue( int index ) {
+            return EStartingPolicy.values()[ index ];
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
+
+        @Override
+        public int getIndex( EStartingPolicy value ) {
+            return value.ordinal();
+        }
+    }
 }

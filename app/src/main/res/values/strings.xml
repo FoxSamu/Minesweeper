@@ -97,7 +97,7 @@
     <string name="mode_name_very_easy">Simple</string>
     <string name="mode_name_easy">Beginner</string>
     <string name="edit_mode_error_invalid_name">Name may not start with \'@\'</string>
-    <string name="mode_name_normal">Normal</string>
+    <string name="mode_name_normal">Intermediate</string>
     <string name="mode_name_hard">Expert</string>
     <string name="mode_name_very_hard">Master</string>
     <string name="discard">Discard</string>
@@ -190,8 +190,8 @@
     <string name="setting_long_press">Long press</string>
     <string name="setting_long_press_desc">What to do on long pressing a cell in each mode (\"Reveal Mode - Flag Mode\").</string>
     <string name="setting_vibration">Vibration</string>
-    <string name="setting_vibration_desc">Vibrate when tapping a mine.</string>
-    <string name="setting_chording">Enable number tap</string>
+    <string name="setting_vibration_desc">Vibrate on certain events.</string>
+    <string name="setting_chording">Number tap behavior</string>
     <string name="setting_chording_desc">What should happen to surrounding cell if a number is being tapped.</string>
     <string name="setting_keep_screen_on">Keep screen on</string>
     <string name="setting_keep_screen_on_desc">Prevent your device from automatically locking the screen during a game.</string>
@@ -202,8 +202,7 @@
     <string name="setting_tap_to_infer">Tap number to infer flags</string>
     <string name="setting_tap_to_infer_desc">When enabled, numbers that have inferred flags could be tapped to place all flags.</string>
     <string name="setting_mark_infer_numbers">Mark numbers that can be completed</string>
-    <string name="setting_mark_infer_numbers_desc">Indicate numbers of which the unrevealed neighbors could all be flagged.</string>
-    <string name="setting_hint_button">Show hint button</string>
+    <string name="setting_hint_button">Show hint option</string>
     <string name="setting_start_policy">Starting policy</string>
     <string name="setting_start_policy_desc">Determines how mines are generated after the first tap.</string>
     <string name="setting_start_policy_no_ensuring">Totally random, no safe start</string>
@@ -298,6 +297,16 @@
     <string name="setting_long_press_soft_mark">Flag - Soft Mark</string>
     <string name="setting_long_press_inverse">Flag - Reveal</string>
     <string name="setting_long_press_all_soft_mark">Soft Mark - Soft Mark</string>
+    <string name="setting_inferred_digs">Show inferred digs</string>
+    <string name="setting_inferred_digs_desc">Show digs inferred from surrounding numbers.</string>
+    <string name="setting_hint_button_desc">Show an option for hints in the game options menu.</string>
+    <string name="dialog_lose_better_luck">Better luck next time...</string>
+    <string name="dialog_win_congrats">Congratulations!</string>
+    <string name="confirm_new_game">Are you sure you want to start a new game?</string>
+    <string name="confirm_yes">Yes</string>
+    <string name="confirm_no">No</string>
+    <string name="confirm_discard">Are you sure you want to discard this game?</string>
+    <string name="menu_about">About</string>
 
     <!-- Example settings for Notifications -->
 

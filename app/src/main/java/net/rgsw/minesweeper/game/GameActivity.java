@@ -5,11 +5,11 @@ import android.animation.FloatEvaluator;
 import android.animation.PointFEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.PointF;
-import android.os.Bundle;
-import android.os.Handler;
+import android.os.*;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -29,10 +29,13 @@ import net.rgsw.ctable.io.CTableEncoder;
 import net.rgsw.ctable.io.CTableReader;
 import net.rgsw.ctable.io.CTableWriter;
 import net.rgsw.ctable.tag.TagStringCompound;
+import net.rgsw.minesweeper.BuildConfig;
 import net.rgsw.minesweeper.R;
 import net.rgsw.minesweeper.game.hint.*;
 import net.rgsw.minesweeper.main.Mode;
 import net.rgsw.minesweeper.settings.Configuration;
+import net.rgsw.minesweeper.settings.ELongPressBehavior;
+import net.rgsw.minesweeper.settings.EShowDialogOnEndBehavior;
 import net.rgsw.minesweeper.util.TwoDScrollView;
 
 import java.io.ByteArrayInputStream;
@@ -40,7 +43,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
-public class GameActivity extends AppCompatActivity implements ICellInvalidator {
+public class GameActivity extends AppCompatActivity implements ICellInvalidator, IEffects {
 
     private Mode mode = null;
     private MinesweeperGame game;
@@ -61,6 +64,8 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
     private int canvasOffsetX;
     private int canvasOffsetY;
 
+    private Vibrator vibrator;
+
     private int chunkSize;
 
     private MinesweeperCanvas[] chunks;
@@ -71,7 +76,11 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
         setTheme( Configuration.useDarkTheme.getValue() ? R.style.AppTheme_Dark_NoActionBar : R.style.AppTheme_NoActionBar );
-        setContentView( R.layout.activity_game ); // TODO: Rename layout
+        setContentView( R.layout.activity_game );
+
+        if( Configuration.keepScreenOn.getValue() ) {
+            getWindow().addFlags( WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON );
+        }
 
         // Create action bar
         setSupportActionBar( toolbar = findViewById( R.id.toolbar2 ) );
@@ -172,6 +181,9 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         gameChunkLayout.invalidate();
 
         game.setInvalidator( this );
+        game.setEffects( this );
+
+        vibrator = ( Vibrator ) getSystemService( VIBRATOR_SERVICE );
 
 
         // Update corner radius of game board shadow
@@ -254,6 +266,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         getMenuInflater().inflate( R.menu.menu_game, menu );
         pauseIcon = menu.findItem( R.id.menu_pause );
         faceIcon = menu.findItem( R.id.menu_face );
+        menu.findItem( R.id.menu_hint ).setVisible( Configuration.showHintOption.getValue() );
 
         // Update game state again so that icons are updated too
         updateGameState();
@@ -283,12 +296,18 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         if( id == R.id.menu_face ) { // Face: only play new game when done
             if( game.done() ) {
                 newGame();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder( this );
+                builder.setMessage( R.string.confirm_new_game );
+                builder.setPositiveButton( R.string.confirm_yes, ( d, w ) -> newGame() );
+                builder.setNegativeButton( R.string.confirm_no, null );
+                builder.show();
             }
             return true;
         }
 
         if( id == R.id.menu_new_game ) { // New game, even if we are still playing
-            newGame();
+            newGame(); // No need for dialog
             return true;
         }
 
@@ -298,23 +317,29 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
 
         if( id == R.id.menu_discard ) { // Main menu, and do not save game
-            Intent intent = new Intent();
-            TagStringCompound cpd = new TagStringCompound();
-            mode.save( cpd ); // Serialize mode in ctable format
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            CTableEncoder encoder = new CTableEncoder( stream );
-            try {
-                encoder.write( cpd );
-            } catch( IOException e ) {
-                e.printStackTrace();
-                setResult( RESULT_CANCELED );
+            AlertDialog.Builder builder = new AlertDialog.Builder( this );
+            builder.setMessage( R.string.confirm_discard );
+            builder.setPositiveButton( R.string.confirm_yes, ( d, w ) -> {
+                Intent intent = new Intent();
+                TagStringCompound cpd = new TagStringCompound();
+                mode.save( cpd ); // Serialize mode in ctable format
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                CTableEncoder encoder = new CTableEncoder( stream );
+                try {
+                    encoder.write( cpd );
+                } catch( IOException e ) {
+                    e.printStackTrace();
+                    setResult( RESULT_CANCELED );
+                    finish();
+                    return;
+                }
+                intent.putExtra( "mode", stream.toByteArray() );
+                intent.putExtra( "undone", false ); // Set as done, we don't need to restore game state again
+                setResult( RESULT_OK, intent );
                 finish();
-                return true;
-            }
-            intent.putExtra( "mode", stream.toByteArray() );
-            intent.putExtra( "undone", false ); // Set as done, we don't need to restore game state again
-            setResult( RESULT_OK, intent );
-            finish();
+            } );
+            builder.setNegativeButton( R.string.confirm_no, null );
+            builder.show();
             return true;
         }
 
@@ -414,24 +439,33 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         }
 
         if( game.done() ) {
+            EShowDialogOnEndBehavior behavior = Configuration.endDialogBehavior.getValue();
             if( pauseIcon != null ) pauseIcon.setIcon( R.drawable.ic_game_stopped );
             if( game.won() ) {
                 // Won!
                 if( faceIcon != null ) faceIcon.setIcon( R.drawable.ic_face_happy );
                 if( minesView != null ) minesView.setText( getString( R.string.simple_decimal_format, 0 ) );
 
-                // Show a dialog, TODO: only on setting
-                WinDialog dialog = new WinDialog( this );
-                long bestTimeMS = mode.getBestTime();
-                long timeMS = game.getTimeMS();
-                dialog.show( game.mines(), game.getTimeMS(), bestTimeMS < 0 || timeMS < bestTimeMS );
+                if( behavior == EShowDialogOnEndBehavior.ALWAYS || behavior == EShowDialogOnEndBehavior.ON_WIN ) {
+                    // Show a dialog
+                    WinDialog dialog = new WinDialog( this );
+                    long bestTimeMS = mode.getBestTime();
+                    long timeMS = game.getTimeMS();
+                    dialog.show( game.mines(), game.getTimeMS(), bestTimeMS < 0 || timeMS < bestTimeMS );
+                }
             } else {
                 // Lost!
                 if( faceIcon != null ) faceIcon.setIcon( R.drawable.ic_face_dead );
 
-                // Show a dialog, TODO: only on setting
-                LoseDialog dialog = new LoseDialog( this );
-                dialog.show( game.getFlaggedMines(), game.mines(), game.getRevealedRelative() );
+                if( BuildConfig.VERSION_NAME.startsWith( "aprilfools" ) ) {
+                    // Show a dialog
+                    AprilFoolsDialog dialog = new AprilFoolsDialog( this );
+                    dialog.show( game.getFlaggedMines(), game.mines(), game.getRevealedRelative() );
+                } else if( behavior == EShowDialogOnEndBehavior.ALWAYS || behavior == EShowDialogOnEndBehavior.ON_LOSE ) {
+                    // Show a dialog
+                    LoseDialog dialog = new LoseDialog( this );
+                    dialog.show( game.getFlaggedMines(), game.mines(), game.getRevealedRelative() );
+                }
             }
 
             finalUpdate = true;
@@ -472,7 +506,16 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
 
     // Called when a cell is long-pressed
     public void onLongClick( MinesweeperCanvas canvas, int x, int y ) {
-        game.doInput( x, y, flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG );
+        ELongPressBehavior behavior = Configuration.longPressBehavior.getValue();
+        if( behavior == ELongPressBehavior.OFF ) return;
+
+        MinesweeperGame.Flag flag = null;
+        if( behavior == ELongPressBehavior.FLAG_DIG ) flag = flagMode ? null : MinesweeperGame.Flag.FLAG;
+        if( behavior == ELongPressBehavior.FLAG_SOFTMARK ) {
+            flag = flagMode ? MinesweeperGame.Flag.SOFT_MARK : MinesweeperGame.Flag.FLAG;
+        }
+        if( behavior == ELongPressBehavior.SOFTMARK_ONLY ) flag = MinesweeperGame.Flag.SOFT_MARK;
+        game.doInput( x, y, flag );
         canvas.invalidate();
         updateGameState();
         hideHint( false );
@@ -691,5 +734,55 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator 
         game.addHint( -1, new CompletedNumberHint() );
         game.addHint( -1, new TankSolverHint( game, 8 ) );  // Least important hint
         // Game will fall back on GuessHint automatically: No need for adding that to the game...
+    }
+
+    @Override
+    public void fxNumber( boolean dig ) {
+        if( dig ) {
+            vibrate( 20 );
+        }
+    }
+
+    private void vibrate( int ms ) {
+        if( !Configuration.vibration.getValue() ) return;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
+            vibrator.vibrate( VibrationEffect.createOneShot( ms, VibrationEffect.DEFAULT_AMPLITUDE ) );
+        } else {
+            vibrator.vibrate( ms );
+        }
+    }
+
+    private void vibrate( long... ms ) {
+        if( !Configuration.vibration.getValue() ) return;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ) {
+            vibrator.vibrate( VibrationEffect.createWaveform( ms, -1 ) );
+        } else {
+            vibrator.vibrate( ms, -1 );
+        }
+    }
+
+    @Override
+    public void fxExplode() {
+        vibrate( 50 );
+    }
+
+    @Override
+    public void fxFlag() {
+
+    }
+
+    @Override
+    public void fxSoftMark() {
+
+    }
+
+    @Override
+    public void fxWin() {
+        vibrate( 0, 30, 20, 30 );
+    }
+
+    @Override
+    public void fxDig() {
+        vibrate( 20 );
     }
 }
