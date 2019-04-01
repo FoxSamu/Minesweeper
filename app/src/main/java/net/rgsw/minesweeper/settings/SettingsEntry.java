@@ -609,4 +609,79 @@ public abstract class SettingsEntry <T extends SettingsEntry> {
         return entry;
     }
 
+
+    public static class ActionEntry extends SettingsEntry<ActionEntry> {
+        private CharSequence title;
+        private CharSequence desc = "";
+        private final View view;
+        private final TextView descView;
+        private final TextView titleView;
+
+        public ActionEntry( String key, Context ctx ) {
+            super( key, ctx );
+            LayoutInflater inflater = LayoutInflater.from( ctx );
+            view = inflater.inflate( R.layout.settings_action, null, false );
+
+            descView = view.findViewById( R.id.desc );
+            titleView = view.findViewById( R.id.title );
+            updateDesc( desc );
+            titleView.setText( title );
+
+            view.setOnClickListener( this::click );
+        }
+
+        private void click( View v ) {
+            onChange();
+        }
+
+        private void updateDesc( CharSequence desc ) {
+            if( desc == null || desc.length() == 0 ) {
+                descView.setVisibility( View.GONE );
+            } else {
+                descView.setVisibility( View.VISIBLE );
+                descView.setText( desc );
+            }
+        }
+
+        @Override
+        public View getView() {
+            return view;
+        }
+
+        public ActionEntry setTitle( CharSequence title ) {
+            this.title = title;
+            titleView.setText( title );
+            return this;
+        }
+
+        public ActionEntry setTitle( int resTitle ) {
+            return setTitle( ctx.getString( resTitle ) );
+        }
+
+        public CharSequence getTitle() {
+            return title;
+        }
+
+        public ActionEntry setDesc( CharSequence desc ) {
+            this.desc = desc;
+            updateDesc( desc );
+            return this;
+        }
+
+        public CharSequence getDesc() {
+            return desc;
+        }
+
+        public ActionEntry setDesc( int resDesc ) {
+            return setDesc( ctx.getString( resDesc ) );
+        }
+    }
+
+    public static ActionEntry action( Context ctx, String key, int resTitle, Integer resDesc, IChangeListener<ActionEntry> listener ) {
+        ActionEntry entry = new ActionEntry( key, ctx ).setTitle( resTitle );
+        if( resDesc != null ) entry.setDesc( resDesc );
+        entry.setChangeListener( listener );
+        return entry;
+    }
+
 }

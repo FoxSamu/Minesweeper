@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Minesweeper</string>
+    <string name="app_name" translatable="false">Minesweeper++</string>
     <string name="action_settings">Settings</string>
     <string name="stat_total">Total Played</string>
     <string name="stat_winrate">Win Rate</string>
@@ -187,12 +187,12 @@
     <string name="setting_win_condition_all_flags">All mines are flagged</string>
     <string name="setting_win_condition_flag_revealed">All not-mines are revealed or all mines are flagged</string>
     <string name="setting_win_condition_all_inferred">All mines have an (inferred) flag</string>
-    <string name="setting_long_press">Enable long pressing</string>
-    <string name="setting_long_press_desc">When enabled, you can hold a cell to flag or to place a question mark in flag mode.</string>
+    <string name="setting_long_press">Long press</string>
+    <string name="setting_long_press_desc">What to do on long pressing a cell in each mode (\"Reveal Mode - Flag Mode\").</string>
     <string name="setting_vibration">Vibration</string>
     <string name="setting_vibration_desc">Vibrate when tapping a mine.</string>
     <string name="setting_chording">Enable number tap</string>
-    <string name="setting_chording_desc">Enable that numbers with enough flags could be tapped to reveal surrounding cells.</string>
+    <string name="setting_chording_desc">What should happen to surrounding cell if a number is being tapped.</string>
     <string name="setting_keep_screen_on">Keep screen on</string>
     <string name="setting_keep_screen_on_desc">Prevent your device from automatically locking the screen during a game.</string>
     <string name="setting_mark_too_many_flags">Mark numbers with too many flags</string>
@@ -201,7 +201,7 @@
     <string name="setting_disable_flags_over_limit">Prevent too much flags in total</string>
     <string name="setting_tap_to_infer">Tap number to infer flags</string>
     <string name="setting_tap_to_infer_desc">When enabled, numbers that have inferred flags could be tapped to place all flags.</string>
-    <string name="setting_mark_infer_numbers">Mark numbers that infer flags</string>
+    <string name="setting_mark_infer_numbers">Mark numbers that can be completed</string>
     <string name="setting_mark_infer_numbers_desc">Indicate numbers of which the unrevealed neighbors could all be flagged.</string>
     <string name="setting_hint_button">Show hint button</string>
     <string name="setting_start_policy">Starting policy</string>
@@ -235,7 +235,7 @@
     <string name="hint_not_started">The game isn\'t started jet</string>
     <string name="hint_lost">The game is already over</string>
     <string name="hint_won">The game is already won</string>
-    <string name="about_version">Version 1.0-indev</string>
+    <string name="about_version">Version %s</string>
     <string name="about_license">Licensed under the Apache License, Version 2.0 (the \"License\"); you may not use this software except in compliance with the License. You may obtain a copy of the License with the button below</string>
     <string name="about_license_button">Full License</string>
     <string name="about_license_2">Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</string>
@@ -248,7 +248,56 @@
     <string name="about_debug">This is a debug version! Consider downloading the app from the Google play store...</string>
     <string name="about_distributor">This app is distributed by, and in ownership of the Red Galaxy team.</string>
     <string name="about_names">The names \"Red Galaxy\", \"Red Galaxy Software\", as well as the abbreviations \"Rg\" and \"RGSW\", all refer and belong to the Red Galaxy team, whether in uppercase or lowercase (or partially uppercase), and with or without spaces.</string>
-    <string name="about_signature_violation">BEWARE: THIS APP HAS IT\'S SIGNATURE VIOLATED!!!\nThe original developer and/or distributor is not responsible for any problems or bugs that may arise or occur.</string>
+    <string name="about_signature_violation">BEWARE: THIS APP HAS IT\'S SIGNATURE VIOLATED!!!\nThis is possible malware: The original developer and/or distributor is not responsible for any problems that may arise. Consider downloading the app from the play store. If you still see this message, then contact the developers.</string>
+    <string name="about_signature_violation_play_store">THIS APP HAS IT\'S SIGNATURE VIOLATED!!!\nBut no worries, it\'s detected that the app is installed from the play store and this is the developer\'s fault. Please contact the developers if you see this, they will solve it as soon as possible...</string>
+    <string name="signature_msg_title">The signature is violated!</string>
+    <string name="signature_msg_text">But no worries, it\'s detected that the app is installed from the play store and this is the developer\'s fault. Please contact the developers if you see this, they will solve it as soon as possible...</string>
+    <string name="signature_msg_text_error">Beware! This is possible malware: this version is not justified... The original developer and/or distributor is not responsible for any problems that may arise. Consider downloading the app from the play store. If you still see this message, then contact the developers.</string>
+    <string name="signature_error">Signature check failed! Beware for malware and report this to the developer...</string>
+    <string name="setting_about">About this app</string>
+    <string name="settings_header_about">Information</string>
+    <string name="setting_rate">Rate this app</string>
+    <string name="setting_report_bug">Report a bug</string>
+    <string name="setting_rate_desc">What do you think about this app? Tell it to me, it will help me making it better.</string>
+    <string name="setting_report_bug_desc">Is something not quite right, tell it to me on Github.</string>
+    <string name="setting_open_github">Show source code on Github</string>
+    <string name="setting_open_github_desc">Curious about the source code and how the app is written? Check it out on Github!</string>
+    <string name="setting_license">License</string>
+    <string name="setting_license_desc">Read about what\'s legal to do with this app and/or it\'s source code and what\'s not.</string>
+    <string name="about_github">Show on github</string>
+    <string name="about_report_bug">Report a bug</string>
+    <string name="slogan">Minesweeper revisited</string>
+    <string name="about_text">The original Minesweeper game for Android, but with a twist. This app is styled with the original Material design, and is equipped with a lot of settings to make your experience the best. And for the beginners, it is equipped with a tutorial and of coarse, live hints. And what\'s even better, it\'s completely free and open source, without ads, and it will always be.</string>
+    <string name="follow_youtube">Youtube</string>
+    <string name="follow_github">Github</string>
+    <string name="follow_stackoverflow">StackOverflow</string>
+    <string name="follow_discord">Discord</string>
+    <string name="about_developer_2">Owner of the RedGalaxy team (RgSW)</string>
+    <string name="about_idea">Hello, I\'m a young, Dutch software developer from Drenthe. I started making this app because there was really no Minesweeper app on Google Play that is 1) free, 2) ad-free, 3) Material design based and 4) open source. Later, my teacher in Informatics told me that he would give me a grade based on my work, instead of letting me make a test that\'s too easy for me. The result: this app. And therefore I want to give a great \"thank you\" to:</string>
+    <string name="about_tool_android_studio">Android Studio, for being the best Android IDE ever.</string>
+    <string name="about_tool_inkscape">Inkscape, wherein I made the Icons that Google didn\'t make.</string>
+    <string name="about_tool_material_color_tool">Material Color Tool, for letting me easily select the colors for the Material design.</string>
+    <string name="about_tool_google_icons">Google, for making the Material design, and the beautiful icons.</string>
+    <string name="about_tool_family">My family, for testing the app and for helping me.</string>
+    <string name="about_tool_github">Github, for hosting (and backing up) my code.</string>
+    <string name="about_tool_android">Android, for being the best OS ever.</string>
+    <string name="about_tool_stackoverflow">Everyone out there on StackOverflow, for having and solving all my problems before I had them.</string>
+    <string name="about_tool_luckytoilet">Luckytoilet, for the Minesweeper solving algorithm, which I used to show live hints wherever possible.</string>
+    <string name="about_tool_friend">My best friend, for being just a best friend.</string>
+    <string name="about_tool_internet">All other people on the internet who posted articles that helped me solving problems.</string>
+    <string name="about_tool_you">And you, for downloading and using my app.</string>
+    <string name="about_tool_teacher">My teacher in Informatics, for grading my project.</string>
+    <string name="bullet" translatable="false">•</string>
+    <string name="about_title">About this app</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="setting_chording_off">Off</string>
+    <string name="setting_chording_flags">Place inferred flags</string>
+    <string name="setting_chording_reveal">Reveal if complete</string>
+    <string name="setting_chording_both">Both</string>
+    <string name="setting_long_press_off">Off</string>
+    <string name="setting_long_press_soft_mark">Flag - Soft Mark</string>
+    <string name="setting_long_press_inverse">Flag - Reveal</string>
+    <string name="setting_long_press_all_soft_mark">Soft Mark - Soft Mark</string>
 
     <!-- Example settings for Notifications -->
 

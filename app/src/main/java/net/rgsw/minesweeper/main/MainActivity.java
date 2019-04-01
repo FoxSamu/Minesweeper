@@ -32,7 +32,6 @@ import net.rgsw.minesweeper.game.GameActivity;
 import net.rgsw.minesweeper.settings.Configuration;
 import net.rgsw.minesweeper.settings.SettingsActivity;
 import net.rgsw.minesweeper.tutorial.TutorialActivity;
-import net.rgsw.minesweeper.util.SignatureUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -58,14 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean optionsOpen;
 
+    private boolean tutorial;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate( savedInstanceState );
 
-        SignatureUtil.checkAppSignature( this );
         if( savedInstanceState == null ) {
             // Show splash screen
-            startActivity( new Intent( this, SplashActivity.class ) );
+            startActivityForResult( new Intent( this, SplashActivity.class ), 0xfffe );
         }
 
         Configuration.init( this );
@@ -240,8 +240,7 @@ public class MainActivity extends AppCompatActivity {
         listAdapter.addItem( new Mode( "@longstretched", 99, 100, 8 ).makeNative() );
         listAdapter.addItem( new Mode( "@tiny", 8, 5, 5 ).makeNative() );
 
-        Intent intent = new Intent( this, TutorialActivity.class );
-        startActivityForResult( intent, 0 );
+        tutorial = true;
     }
 
     @Override
@@ -361,6 +360,11 @@ public class MainActivity extends AppCompatActivity {
         if( requestCode == 0 ) {
             if( resultCode == RESULT_OK ) {
                 playGame( listAdapter.getItem( 0 ), 0 );
+            }
+        } else if( requestCode == 0xfffe ) {
+            if( tutorial ) { // Show tutorial after splash screen
+                Intent intent2 = new Intent( this, TutorialActivity.class );
+                startActivityForResult( intent2, 0 );
             }
         } else if( requestCode == 0xffff ) {
             restoredFromSettings = true;

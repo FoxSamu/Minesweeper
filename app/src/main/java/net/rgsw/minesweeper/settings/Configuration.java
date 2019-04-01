@@ -17,9 +17,23 @@ public class Configuration {
     // Behavior & Controls
     public static final Setting<EModeButtonPos> modeButtonPos = new Setting<>( false, EModeButtonPos.RIGHT );
     public static final Setting<Boolean> markTappedMine = new Setting<>( false, true );
+    public static final Setting<ENumberTapBehavior> numberTapBehavior = new Setting<>( false, ENumberTapBehavior.REVEAL );
+    public static final Setting<ELongPressBehavior> longPressBehavior = new Setting<>( false, ELongPressBehavior.FLAG_DIG );
+    public static final Setting<EWinPolicy> winCondition = new Setting<>( false, EWinPolicy.FLAG_OR_REVEALED );
+    public static final Setting<EStartingPolicy> startingPolicy = new Setting<>( false, EStartingPolicy.FULL_ENSURANCE );
+    public static final Setting<Boolean> vibration = new Setting<>( false, false );
+    public static final Setting<EShowDialogOnEndBehavior> endDialogBehavior = new Setting<>( false, EShowDialogOnEndBehavior.ALWAYS );
+    public static final Setting<Boolean> keepScreenOn = new Setting<>( false, false );
+    public static final Setting<Boolean> disableFlagOverflowAroundNums = new Setting<>( false, false );
+    public static final Setting<Boolean> disableFlagOverflowTotal = new Setting<>( false, true );
+    public static final Setting<Boolean> showHintOption = new Setting<>( false, true );
 
     // Hints
     public static final Setting<Boolean> showInferredFlags = new Setting<>( false, false );
+    public static final Setting<Boolean> showInferredDigs = new Setting<>( false, false );
+    public static final Setting<Boolean> markTooManyFlags = new Setting<>( false, false );
+    public static final Setting<Boolean> markCompletableNumbers = new Setting<>( false, false );
+    public static final Setting<Boolean> markCompletedNumbers = new Setting<>( false, false );
 
     // Advanced
     public static final Setting<Integer> gameChunkSize = new Setting<>( false, 4 );

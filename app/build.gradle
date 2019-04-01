@@ -2,12 +2,11 @@ apply plugin: 'com.android.application'
 
 android {
     signingConfigs {
-        // Haha, these are old!
-        sweepersigning {
-            keyAlias 'secretkey'
-            keyPassword 'S3CR3TPA55W0RD'
-            storeFile file('/Very/Secret/Path/To/Keystore.jks')
-            storePassword 'S3CR3TPA55W0RD'
+        sweepersigning { // Muahahaha, i'll never share the actual values...
+            keyAlias sweeperKeyStoreKey
+            keyPassword sweeperKeyStoreKeyPass
+            storeFile file(sweeperKeyStore)
+            storePassword sweeperKeyStorePass
         }
     }
     compileSdkVersion 28
@@ -16,9 +15,10 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName '1.0-indev'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.sweepersigning
+
     }
     buildTypes {
         release {
