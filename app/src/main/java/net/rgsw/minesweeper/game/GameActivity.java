@@ -29,7 +29,6 @@ import net.rgsw.ctable.io.CTableEncoder;
 import net.rgsw.ctable.io.CTableReader;
 import net.rgsw.ctable.io.CTableWriter;
 import net.rgsw.ctable.tag.TagStringCompound;
-import net.rgsw.minesweeper.BuildConfig;
 import net.rgsw.minesweeper.R;
 import net.rgsw.minesweeper.game.hint.*;
 import net.rgsw.minesweeper.main.Mode;
@@ -457,11 +456,7 @@ public class GameActivity extends AppCompatActivity implements ICellInvalidator,
                 // Lost!
                 if( faceIcon != null ) faceIcon.setIcon( R.drawable.ic_face_dead );
 
-                if( BuildConfig.VERSION_NAME.startsWith( "aprilfools" ) ) {
-                    // Show a dialog
-                    AprilFoolsDialog dialog = new AprilFoolsDialog( this );
-                    dialog.show( game.getFlaggedMines(), game.mines(), game.getRevealedRelative() );
-                } else if( behavior == EShowDialogOnEndBehavior.ALWAYS || behavior == EShowDialogOnEndBehavior.ON_LOSE ) {
+                if( behavior == EShowDialogOnEndBehavior.ALWAYS || behavior == EShowDialogOnEndBehavior.ON_LOSE ) {
                     // Show a dialog
                     LoseDialog dialog = new LoseDialog( this );
                     dialog.show( game.getFlaggedMines(), game.mines(), game.getRevealedRelative() );

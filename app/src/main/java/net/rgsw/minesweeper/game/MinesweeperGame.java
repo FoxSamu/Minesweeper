@@ -3,7 +3,6 @@ package net.rgsw.minesweeper.game;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import net.rgsw.ctable.tag.TagStringCompound;
-import net.rgsw.minesweeper.BuildConfig;
 import net.rgsw.minesweeper.game.hint.GuessHint;
 import net.rgsw.minesweeper.game.hint.Hint;
 import net.rgsw.minesweeper.main.Mode;
@@ -157,18 +156,6 @@ public class MinesweeperGame implements IGame {
         }
         amountMines = allMines;
 
-
-        startTime = System.currentTimeMillis();
-
-        if( BuildConfig.VERSION_NAME.startsWith( "aprilfools" ) ) {
-            for( int i = 0; i < mines.length; i++ ) {
-                mines[ i ] = true;
-            }
-
-            end( false );
-            return;
-        }
-
         // Compute adjacent-mines numbers
         for( int x1 = 0; x1 < width; x1++ ) {
             for( int y1 = 0; y1 < height; y1++ ) {
@@ -176,6 +163,8 @@ public class MinesweeperGame implements IGame {
                 adjacent[ i ] = findAdjacentMines( x1, y1 );
             }
         }
+
+        startTime = System.currentTimeMillis();
 
         // Push something processable to the stack
         processingStack.push( new Location( x, y ) );

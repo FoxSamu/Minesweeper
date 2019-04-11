@@ -44,26 +44,6 @@ android {
     }
     flavorDimensions "mainDimen"
     productFlavors {
-        aprilfools {
-            minSdkVersion 21
-            applicationId 'net.rgsw.minesweeper'
-            signingConfig signingConfigs.sweepersigning
-            targetSdkVersion 28
-            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-            versionCode 1
-            versionName 'aprilfools'
-            dimension "mainDimen"
-        }
-        normal {
-            minSdkVersion 21
-            applicationId 'net.rgsw.minesweeper'
-            signingConfig signingConfigs.sweepersigning
-            targetSdkVersion 28
-            testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
-            versionCode 1
-            versionName '1.0-indev'
-            dimension "mainDimen"
-        }
     }
 }
 
