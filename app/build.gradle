@@ -4,10 +4,10 @@ android {
     signingConfigs {
         // Haha, these are old!
         sweepersigning {
-            keyAlias 'sweeperkey'
-            keyPassword 'Secretpassword'
-            storeFile file('/Users/Mac1/Documents/Keystore/net.rgsw.minesweeper.jks')
-            storePassword 'Secretpassword'
+            keyAlias 'secretkey'
+            keyPassword 'S3CR3TPA55W0RD'
+            storeFile file('/Very/Secret/Path/To/Keystore.jks')
+            storePassword 'S3CR3TPA55W0RD'
         }
     }
     compileSdkVersion 28
